@@ -1,0 +1,20 @@
+#!/bin/sh
+mkdir -p src/main/resources/raw/{eve,char,corp}
+mkdir -p src/main/resources/xsd/{eve,char,corp}
+echo "Generating XSD schemas"
+for xml in `find src/main/resources/raw/ -name '*.xml'`;
+do
+    echo "\t"$xml
+    input=$xml;
+    output=`echo $xml | sed 's/raw/xsd/g' | sed 's/\.xml/\.xsd/g'`;
+    java -jar util/trang.jar $input $output;
+    echo $output;
+done
+echo "Generating namespaces for XSD schemas"
+for xsd in `find src/main/resources/xsd/ -name '*.xsd'`;
+do
+    p=`echo $xsd | sed 's/.*xsd\//moe.pizza.eveapi.generated./' | sed 's:/:.:' | sed 's/\.xsd$//g'`;
+    echo $p;
+    echo $xsd;
+    ~/bin/scalaxb $xsd -p $p --package-dir --protocol-package $p -d src/main/scala/;
+done
