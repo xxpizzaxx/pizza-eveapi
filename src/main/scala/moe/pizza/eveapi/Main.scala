@@ -16,10 +16,12 @@ object Main extends App {
   // assume we got a result and pull the character IDs out
   val characterids = r.get.map(_.characterID)
   // look up the characterinfo asynchronously
-  val info = characterids.map{_.toLong}.map{api.eve.CharacterInfo}
+  val infoLookups = characterids.map{_.toLong}.map{api.eve.CharacterInfo}
   // attach callbacks
-  info.foreach{_.onSuccess{
-    case chardata => println(chardata)
+  infoLookups.foreach{_.onSuccess{
+    case lookup => lookup.map { char =>
+      println("character %s is of bloodline %s and has security status %f".format(char.characterName, char.bloodline, char.securityStatus))
+    }
   }}
   // end our main method
   println("done")

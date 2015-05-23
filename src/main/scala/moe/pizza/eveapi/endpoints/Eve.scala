@@ -19,9 +19,9 @@ class Eve(baseurl: String)(implicit ec: ExecutionContext) {
   def CharacterID(ids: Seq[String]): Future[Try[Seq[eve.CharacterID.Row]]] = {
     new ApiRequest[eve.CharacterID.Eveapi](baseurl, "Eve/CharacterID.xml.aspx", None, Map("names" -> ids.mkString(",")))(eve.CharacterID.CharacterIDEveapiFormat).apply().map{_.map{_.result.rowset.row}}
   }
-  def CharacterInfo(id: Long): Future[Try[eve.CharacterInfo.Row]] = {
+  def CharacterInfo(id: Long): Future[Try[eve.CharacterInfo.Result]] = {
     new ApiRequest[eve.CharacterInfo.Eveapi](baseurl, "Eve/CharacterInfo.xml.aspx", None, Map("characterID" -> id.toString))(eve.CharacterInfo.CharacterInfoEveapiFormat).
-      apply().map{_.map{_.result.rowset.row.head}}
+      apply().map{_.map{_.result}}
   }
 
   def CharacterName(ids: Seq[Long]): Future[Try[Seq[eve.CharacterName.Row]]] = {
