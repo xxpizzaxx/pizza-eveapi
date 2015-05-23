@@ -1,14 +1,18 @@
 package moe.pizza.eveapi
 
 import dispatch._, Defaults._
+import scala.util.{Try, Failure, Success}
 import scala.xml.{Elem, XML}
 
 
 class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[T]) {
 
-  def apply(): Option[T] = {
+  implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
+    def toTry:Try[T] = e.fold(Failure(_), Success(_))
+  }
+
+  def apply(): Future[Try[T]] = {
     val mysvc = url(base+endpoint)
-    println(base+endpoint)
     var req = mysvc.GET
     // add API key
     req = auth match {
@@ -18,7 +22,11 @@ class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None
     // add arguments
     req = args.foldLeft(req)((r, kv) => r.addQueryParameter(kv._1, kv._2))
     println(req.url)
+    // return as future either
     val response = Http(req OK as.String)
-    Some(scalaxb.fromXML[T](XML.loadString(response())))
+    response.either.map {
+      case Right(r) => Right(scalaxb.fromXML[T](XML.loadString(r)))
+      case Left(t) => Left(t)
+    }.map{_.toTry}
   }
 }
