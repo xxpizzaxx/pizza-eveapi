@@ -66,3 +66,12 @@ $RECYCLE.BIN/
 #idea
 eveapi.iml
 .idea
+
+
+#generated code
+release.properties
+pom.xml.releaseBackup
+src/main/resources/xsd
+src/main/scala/moe/pizza/eveapi/generated/
+src/main/scalaxb
+src/main/scala/scalaxb
