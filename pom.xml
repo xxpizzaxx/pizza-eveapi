@@ -4,7 +4,7 @@
 
 	<groupId>moe.pizza</groupId>
 	<artifactId>eveapi</artifactId>
-	<version>0.7</version>
+	<version>0.8-SNAPSHOT</version>
 	<properties>
 		<scalaVersion>2.11.5</scalaVersion>
 		<scalaBinaryVersion>2.11</scalaBinaryVersion>
@@ -116,7 +116,7 @@
 		<connection>scm:git:https://github.com/andimiller/pizza-eveapi.git</connection>
 		<developerConnection>scm:git:git@github.com:andimiller/pizza-eveapi.git</developerConnection>
 		<url>https://github.com/andimiller/pizza-eveapi</url>
-		<tag>eveapi-0.7</tag>
+		<tag>eveapi-0.2</tag>
 	</scm>
 
 	<distributionManagement>
