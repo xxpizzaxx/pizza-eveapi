@@ -42,7 +42,7 @@ And depend upon it like so:
   val api = new EVEAPI()
   // do API things
   // Get the IDs of these characters and wait 2 seconds for the result
-  val r = Await.result(api.eve.CharacterID(List("Lucia Denniard", "wheniaminspace", "capqu")), 2 seconds)
+  val r = api.eve.CharacterID(List("Lucia Denniard", "wheniaminspace", "capqu")).sync(2 seconds)
   // get a list of IDs in a way that fails gracefully
   val characterids = r getOrElse(List()) map(_.characterID)
   // look up the characterinfo asynchronously
