@@ -4,7 +4,7 @@
 
 	<groupId>moe.pizza</groupId>
 	<artifactId>eveapi</artifactId>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.6-SNAPSHOT</version>
 	<properties>
 		<scalaVersion>2.11.5</scalaVersion>
 		<scalaBinaryVersion>2.11</scalaBinaryVersion>
