@@ -21,7 +21,6 @@ class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None
     }
     // add arguments
     req = args.foldLeft(req)((r, kv) => r.addQueryParameter(kv._1, kv._2))
-    println(req.url)
     // return as future either
     val response = Http(req OK as.String)
     response.either.map {
