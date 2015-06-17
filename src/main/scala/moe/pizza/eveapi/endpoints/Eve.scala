@@ -25,7 +25,7 @@ class Eve(baseurl: String)(implicit ec: ExecutionContext) {
   }
 
   def CharacterName(ids: Seq[Long]): Future[Try[Seq[eve.CharacterName.Row]]] = {
-    new ApiRequest[eve.CharacterName.Eveapi](baseurl, "Eve/CharacterName.xml.aspx")(eve.CharacterName.CharacterNameEveapiFormat).
+    new ApiRequest[eve.CharacterName.Eveapi](baseurl, "Eve/CharacterName.xml.aspx", None, Map{"ids" -> ids.mkString(",")})(eve.CharacterName.CharacterNameEveapiFormat).
       apply().map{_.map{_.result.rowset.row}}
   }
 
