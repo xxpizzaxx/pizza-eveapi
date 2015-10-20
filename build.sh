@@ -20,5 +20,5 @@ do
     p=`echo $xsd | sed 's/.*xsd\//moe.pizza.eveapi.generated./' | sed 's:/:.:' | sed 's/\.xsd$//g'`;
     echo $p;
     echo $xsd;
-    ~/bin/scalaxb $xsd -p $p --package-dir --protocol-package $p -d src/main/scala/;
+    java -jar util/scalaxb.jar $xsd -p $p --package-dir --protocol-package $p -d src/main/scala/;
 done

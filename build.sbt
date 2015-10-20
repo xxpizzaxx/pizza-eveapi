@@ -15,6 +15,7 @@ buildSources := {
 }
 
 compile <<= (compile in Compile) dependsOn buildSources
+test <<= (test in Test) dependsOn buildSources
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.3"
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3"
