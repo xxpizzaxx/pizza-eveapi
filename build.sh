@@ -2,9 +2,11 @@
 mkdir -p src/main/resources/raw/eve
 mkdir -p src/main/resources/raw/char
 mkdir -p src/main/resources/raw/corp
+mkdir -p src/main/resources/raw/account
 mkdir -p src/main/resources/xsd/eve
 mkdir -p src/main/resources/xsd/char
 mkdir -p src/main/resources/xsd/corp
+mkdir -p src/main/resources/xsd/account
 echo "Generating XSD schemas"
 for xml in `find src/main/resources/raw/ -name '*.xml'`;
 do

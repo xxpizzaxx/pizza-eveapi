@@ -1,7 +1,7 @@
 package moe.pizza.eveapi
 
 import org.scalatest.{Matchers, FlatSpec}
-import moe.pizza.eveapi.generated.char
+import moe.pizza.eveapi.generated.{char, account}
 import scala.io.Source
 import scala.xml.XML
 
@@ -18,6 +18,14 @@ class EndpointsSpec extends FlatSpec with Matchers {
     }
 
   }
+
+  // Account
+
+  new EndpointTester[account.AccountStatus.Eveapi]("/raw/account/AccountStatus.xml").apply()
+  new EndpointTester[account.APIKeyInfo.Eveapi]("/raw/account/APIKeyInfo.xml").apply()
+  new EndpointTester[account.Characters.Eveapi]("/raw/account/Characters.xml").apply()
+
+  // Characters
 
   new EndpointTester[char.AccountBalance.Eveapi]("/raw/char/AccountBalance.xml").apply()
   new EndpointTester[char.AssetList.Eveapi]("/raw/char/AssetList.xml").apply()
