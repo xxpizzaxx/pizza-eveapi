@@ -20,6 +20,8 @@ libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.3"
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3"
 libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
 
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+
 bintrayReleaseOnPublish in ThisBuild := false
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
