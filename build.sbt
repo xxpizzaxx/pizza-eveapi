@@ -4,8 +4,6 @@ organization := "moe.pizza"
 
 scalaVersion := "2.11.7"
 
-version := "0.9"
-
 isSnapshot := true
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
