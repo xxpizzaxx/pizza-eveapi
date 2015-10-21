@@ -30,7 +30,14 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
 
   "the API client" should "be able to request public data" in {
     val client = new EVEAPI("http://%s:%d/".format(hostname, port))
-    stubFor(get(urlEqualTo("/Eve/AllianceList.xml.aspx")).willReturn(aResponse().withBody(getMockContents("/eve/AllianceList.xml")).withStatus(200)))
+    stubFor(
+      get(urlEqualTo("/Eve/AllianceList.xml.aspx"))
+      .willReturn(
+        aResponse()
+          .withBody(getMockContents("/eve/AllianceList.xml"))
+          .withStatus(200)
+      )
+    )
     val res = client.eve.AllianceList()
     val brave = res.sync().get.find(_.allianceID.contains(99003214))
     assert(brave.nonEmpty)
