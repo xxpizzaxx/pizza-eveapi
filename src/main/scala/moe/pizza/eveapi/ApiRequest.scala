@@ -12,7 +12,7 @@ class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None
   }
 
   def apply(): Future[Try[T]] = {
-    val mysvc = url(base+endpoint)
+    val mysvc = url(base+endpoint).addHeader("User-Agent", "pizza-eveapi")
     var req = mysvc.GET
     // add API key
     req = auth match {

@@ -22,6 +22,7 @@ libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % 
 libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
+libraryDependencies += "com.github.tomakehurst" % "wiremock" % "1.33" % "test"
 
 bintrayReleaseOnPublish in ThisBuild := false
 
