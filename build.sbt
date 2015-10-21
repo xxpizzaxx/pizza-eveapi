@@ -24,6 +24,6 @@ libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 libraryDependencies += "com.github.tomakehurst" % "wiremock" % "1.33" % "test"
 
-bintrayReleaseOnPublish in ThisBuild := false
+bintrayReleaseOnPublish in ThisBuild := true
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
