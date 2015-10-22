@@ -9,4 +9,5 @@ class EVEAPI(baseurl: String = "https://api.eveonline.com/")(implicit val key: O
   val char = new endpoints.Character(baseurl, key)
   val corp = new endpoints.Corp(baseurl, key)
   val eve = new endpoints.Eve(baseurl)
+  val map = new endpoints.Map(baseurl)
 }

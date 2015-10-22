@@ -43,4 +43,38 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
     assert(brave.nonEmpty)
   }
 
+
+  def stubit(endpoint: String) = {
+    stubFor(get(urlEqualTo("/"+endpoint.capitalize+".aspx"))
+      .willReturn(aResponse().withBody(getMockContents("/"+endpoint)).withStatus(200))
+    )
+  }
+
+  // Maps
+  "the API client" should "map.Kills()" in {
+    val client = new EVEAPI("http://%s:%d/".format(hostname, port))
+    stubit("map/Kills.xml")
+    val res = client.map.Kills().sync()
+    assert(res.isSuccess)
+  }
+  "the API client" should "map.FacWarSystems()" in {
+    val client = new EVEAPI("http://%s:%d/".format(hostname, port))
+    stubit("map/FacWarSystems.xml")
+    val res = client.map.FacWarSystems().sync()
+    assert(res.isSuccess)
+  }
+    "the API client" should "map.Jumps()" in {
+    val client = new EVEAPI("http://%s:%d/".format(hostname, port))
+    stubit("map/Jumps.xml")
+    val res = client.map.Jumps().sync()
+    assert(res.isSuccess)
+  }
+    "the API client" should "map.Sovereignty()" in {
+    val client = new EVEAPI("http://%s:%d/".format(hostname, port))
+    stubit("map/Sovereignty.xml")
+    val res = client.map.Sovereignty().sync()
+    assert(res.isSuccess)
+  }
+
+
 }
