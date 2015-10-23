@@ -39,7 +39,7 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
       )
     )
     val res = client.eve.AllianceList()
-    val brave = res.sync().get.find(_.allianceID.contains(99003214))
+    val brave = res.sync().get.result.find(_.allianceID.contains(99003214))
     assert(brave.nonEmpty)
   }
 
