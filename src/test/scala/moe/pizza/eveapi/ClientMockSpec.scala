@@ -63,18 +63,27 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
     val res = client.map.FacWarSystems().sync()
     assert(res.isSuccess)
   }
-    "the API client" should "map.Jumps()" in {
+  "the API client" should "map.Jumps()" in {
     val client = new EVEAPI("http://%s:%d/".format(hostname, port))
     stubit("map/Jumps.xml")
     val res = client.map.Jumps().sync()
     assert(res.isSuccess)
   }
-    "the API client" should "map.Sovereignty()" in {
+  "the API client" should "map.Sovereignty()" in {
     val client = new EVEAPI("http://%s:%d/".format(hostname, port))
     stubit("map/Sovereignty.xml")
     val res = client.map.Sovereignty().sync()
     assert(res.isSuccess)
   }
+
+  // Server
+  "the API client" should "server.ServerStatus()" in {
+    val client = new EVEAPI("http://%s:%d/".format(hostname, port))
+    stubit("server/ServerStatus.xml")
+    val res = client.server.ServerStatus().sync()
+    assert(res.isSuccess)
+  }
+
 
 
 }
