@@ -17,7 +17,9 @@ buildSources := {
 compile <<= (compile in Compile) dependsOn buildSources
 test <<= (test in Test) dependsOn buildSources
 
-val slickVersion = "3.0.1"
+resolvers += Resolver.bintrayRepo("andimiller", "maven")
+
+val slickVersion = "3.2.1000"
 
 libraryDependencies ++= Seq(
   "org.scala-lang.modules"       %% "scala-xml"                % "1.0.3",
