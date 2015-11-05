@@ -19,7 +19,7 @@ test <<= (test in Test) dependsOn buildSources
 
 resolvers += Resolver.bintrayRepo("andimiller", "maven")
 
-val slickVersion = "3.2.1000"
+val slickVersion = "3.0.1"
 
 libraryDependencies ++= Seq(
   "org.scala-lang.modules"       %% "scala-xml"                % "1.0.3",
@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   "org.slf4j"                    % "slf4j-simple"              % "1.7.12",
   "com.typesafe.slick"           %% "slick"                    % slickVersion,
   "com.typesafe.slick"           %% "slick-codegen"            % slickVersion,
-  "org.xerial"                   % "sqlite-jdbc"               % "3.6.20"
+  "mysql"                        % "mysql-connector-java"      % "3.1.37"
 )
 
 libraryDependencies ++= Seq (
@@ -45,15 +45,15 @@ libraryDependencies ++= Seq (
 lazy val slickGenerate = taskKey[Seq[File]]("slick code generation")
 
 slickGenerate := {
-  val url = "jdbc:sqlite:/home/andi/eve.db"
-  val jdbcDriver = "com.sqlite.Driver"
-  val slickDriver = "scala.slick.driver.SQLiteDriver"
+    val url = "jdbc:mysql://localhost:3306/sde"
+  val jdbcDriver = "com.mysql.jdbc..Driver"
+  val slickDriver = "scala.slick.driver.MySQLDriver"
   val targetPackageName = "moe.pizza.sdeapi"
-  val outputDir = ((sourceManaged in Compile).value / "eve.db").getPath // place generated files in sbt's managed sources folder
+  val outputDir = ((sourceManaged in Compile).value / "sde").getPath // place generated files in sbt's managed sources folder
   val fname = outputDir + s"/$targetPackageName/Tables.scala"
   println(s"\nauto-generating slick source for database schema at $url...")
   println(s"output source file file: file://$fname\n")
-  (runner in Compile).value.run("scala.slick.codegen.SourceCodeGenerator", (dependencyClasspath in Compile).value.files, Array(slickDriver, jdbcDriver, url, outputDir, targetPackageName), streams.value.log)
+  (runner in Compile).value.run("scala.slick.codegen.SourceCodeGenerator", (dependencyClasspath in Compile).value.files, Array(slickDriver, jdbcDriver, url, outputDir, targetPackageName, "sde", "sde"), streams.value.log)
   Seq(file(fname))
 }
 
