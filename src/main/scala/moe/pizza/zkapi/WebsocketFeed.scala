@@ -2,10 +2,9 @@ package moe.pizza.zkapi
 
 import java.net.URI
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.{DeserializationConfig, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import moe.pizza.zkapi.zkillboard.Killmail
-import org.eclipse.jetty.util.ssl.SslContextFactory
 import org.eclipse.jetty.websocket.api.{WebSocketListener, Session, WebSocketAdapter}
 import org.eclipse.jetty.websocket.client.WebSocketClient
 import org.slf4j.{LoggerFactory, Logger}

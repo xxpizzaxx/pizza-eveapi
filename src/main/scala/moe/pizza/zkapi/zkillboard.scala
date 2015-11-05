@@ -1,51 +1,61 @@
 package moe.pizza.zkapi
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
 /**
  * Created by Andi on 04/11/2015.
  */
 object zkillboard {
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Victim(
                      x: Double,
                      y: Double,
                      z: Double,
-                     shipTypeID: Double,
-                     characterID: Double,
+                     shipTypeID: Long,
+                     characterID: Long,
                      characterName: String,
-                     corporationID: Double,
+                     corporationID: Long,
                      corporationName: String,
-                     allianceID: Double,
+                     allianceID: Long,
                      allianceName: String,
-                     factionID: Double,
+                     factionID: Long,
                      factionName: String,
-                     damageTaken: Double
+                     damageTaken: Long
                      )
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Attackers(
-                        characterID: Double,
+                        characterID: Long,
                         characterName: String,
-                        corporationID: Double,
+                        corporationID: Long,
                         corporationName: String,
-                        allianceID: Double,
+                        allianceID: Long,
                         allianceName: String,
-                        factionID: Double,
+                        factionID: Long,
                         factionName: String,
-                        securityStatus: Double,
+                        securityStatus: Long,
                         damageDone: Double,
-                        finalBlow: Double,
-                        weaponTypeID: Double,
-                        shipTypeID: Double
+                        finalBlow: Long,
+                        weaponTypeID: Long,
+                        shipTypeID: Long
                         )
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Items(
-                    typeID: Double,
-                    flag: Double,
-                    qtyDropped: Double,
-                    qtyDestroyed: Double,
-                    singleton: Double
+                    typeID: Long,
+                    flag: Long,
+                    qtyDropped: Long,
+                    qtyDestroyed: Long,
+                    singleton: Long
                     )
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Killmail(
-                             killID: Double,
-                             solarSystemID: Double,
+                             killID: Long,
+                             solarSystemID: Long,
                              killTime: String,
-                             moonID: Double,
+                             moonID: Long,
                              victim: Victim,
                              attackers: List[Attackers],
                              items: List[Items]
