@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   "org.slf4j"                    % "slf4j-simple"              % "1.7.12",
   "com.typesafe.slick"           %% "slick"                    % slickVersion,
   "com.typesafe.slick"           %% "slick-codegen"            % slickVersion,
-  "mysql"                        % "mysql-connector-java"      % "3.1.37"
+  "mysql"                        % "mysql-connector-java"      % "5.1.37"
 )
 
 libraryDependencies ++= Seq (
@@ -46,16 +46,18 @@ lazy val slickGenerate = taskKey[Seq[File]]("slick code generation")
 
 slickGenerate := {
     val url = "jdbc:mysql://localhost:3306/sde"
-  val jdbcDriver = "com.mysql.jdbc..Driver"
-  val slickDriver = "scala.slick.driver.MySQLDriver"
+  val jdbcDriver = "com.mysql.jdbc.Driver"
+  val slickDriver = "slick.driver.MySQLDriver"
   val targetPackageName = "moe.pizza.sdeapi"
-  val outputDir = ((sourceManaged in Compile).value / "sde").getPath // place generated files in sbt's managed sources folder
+  val outputDir = "./src/main/scala/"//((sourceManaged in Compile).value / "sde").getPath // place generated files in sbt's managed sources folder
   val fname = outputDir + s"/$targetPackageName/Tables.scala"
   println(s"\nauto-generating slick source for database schema at $url...")
   println(s"output source file file: file://$fname\n")
-  (runner in Compile).value.run("scala.slick.codegen.SourceCodeGenerator", (dependencyClasspath in Compile).value.files, Array(slickDriver, jdbcDriver, url, outputDir, targetPackageName, "sde", "sde"), streams.value.log)
+  (runner in Compile).value.run("slick.codegen.SourceCodeGenerator", (dependencyClasspath in Compile).value.files, Array(slickDriver, jdbcDriver, url, outputDir, targetPackageName, "sde", "sde"), streams.value.log)
   Seq(file(fname))
 }
+
+//compile <<= (compile in Compile) dependsOn slickGenerate
 
 
 ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
