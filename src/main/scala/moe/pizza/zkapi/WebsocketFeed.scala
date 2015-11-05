@@ -36,7 +36,6 @@ object WebsocketFeed {
       override def onWebSocketText(message: String): Unit = {
         if (message.startsWith("{")) {
           val kill = OM.readValue(message, classOf[zkillboard.Killmail])
-          logger.info(kill.toString)
           callback(kill)
         }
       }
