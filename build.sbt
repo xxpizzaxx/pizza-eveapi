@@ -45,7 +45,7 @@ libraryDependencies ++= Seq (
 lazy val slickGenerate = taskKey[Seq[File]]("slick code generation")
 
 slickGenerate := {
-    val url = "jdbc:mysql://localhost:3306/sde"
+  val url = "jdbc:mysql://localhost:3306/sde"
   val jdbcDriver = "com.mysql.jdbc.Driver"
   val slickDriver = "slick.driver.MySQLDriver"
   val targetPackageName = "moe.pizza.sdeapi"
