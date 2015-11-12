@@ -10,27 +10,49 @@ This is a high level API binding for the EVE XML API, it provides asynchronous t
 
 ### Depending on it
 
-Add this repository to your build system:
+#### Maven
+
+Add jcenter to your dependencies
 
 ```xml
-    <repositories>
-        <repository>
-            <id>andimiller-bintray</id>
-            <name>andimiller bintray</name>
-            <url>https://dl.bintray.com/andimiller/maven/</url>
-        </repository>
-    </repositories>
+<repository>
+    <snapshots>
+        <enabled>false</enabled>
+    </snapshots>
+    <id>central</id>
+    <name>bintray</name>
+    <url>http://jcenter.bintray.com</url>
+</repository>
 ```
 
 
 And depend upon it like so:
 
 ```xml
-        <dependency>
-            <groupId>moe.pizza</groupId>
-            <artifactId>eveapi</artifactId>
-            <version>0.5</version>
-        </dependency>
+<dependency>
+    <groupId>moe.pizza</groupId>
+    <artifactId>eveapi</artifactId>
+    <version>0.20</version>
+</dependency>
+```
+
+#### sbt
+
+Add jcenter using the bintray plugin
+
+```scala
+addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
+```
+```scala
+resolvers += Resolver.jcenterRepo
+```
+
+And depend on it:
+
+```scala
+libraryDependencies ++= Seq(
+  "moe.pizza" %% "eveapi" % "0.20"
+)
 ```
 
 ### Basic example
