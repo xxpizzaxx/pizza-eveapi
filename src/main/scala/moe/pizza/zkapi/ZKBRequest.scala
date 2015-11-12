@@ -7,6 +7,7 @@ import moe.pizza.zkapi.zkillboard.Killmail
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatterBuilder
 
+import scala.concurrent.ExecutionContext
 import scala.util.{Success, Failure, Try}
 
 case class ZKBRequest(
@@ -55,7 +56,7 @@ case class ZKBRequest(
   def regionID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("regionID" -> id))
   def warID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("warID" -> id))
 
-  def build(): Future[Try[List[Killmail]]] = {
+  def build(implicit ec: ExecutionContext): Future[Try[List[Killmail]]] = {
     val mainurl = baseurl + "/orderDirection/%s".format(this.sort) + "/page/%d".format(page)
     val typestring = typemodifier match {
       case Some(t) => "/%s".format(t)
