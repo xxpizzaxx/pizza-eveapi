@@ -16,8 +16,8 @@ case class ZKBRequest(
                        modifiers: Map[String,Long] = Map(),
                        page: Int = 1,
                        typemodifier: Option[String] = None,
-                       start: Option[DateTime] = None,
-                       end: Option[DateTime] = None
+                       _start: Option[DateTime] = None,
+                       _end: Option[DateTime] = None
 
                        ) {
   implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
@@ -39,8 +39,8 @@ case class ZKBRequest(
   def sortDesc() = this.copy(sort = "desc")
   def page(i: Int) = this.copy(page = i)
   def userAgent(s: String) = this.copy(useragent = "pizza-zkbapi, %s".format(s))
-  def start(s: DateTime) = this.copy(start = Some(s))
-  def end(e: DateTime) = this.copy(end = Some(e))
+  def start(s: DateTime) = this.copy(_start = Some(s))
+  def end(e: DateTime) = this.copy(_end = Some(e))
   def kills() = this.copy(typemodifier = Some("kills"))
   def losses() = this.copy(typemodifier = Some("losses"))
   def wspace() = this.copy(typemodifier = Some("w-space"))
@@ -63,11 +63,11 @@ case class ZKBRequest(
 
     }
     val modifierstring = modifiers.toList.map(kv => "/%s/%d".format(kv._1, kv._2)).mkString
-    val startstring = this.start match {
+    val startstring = this._start match {
       case Some(s) => "/startTime/%s".format(zkbdateformatter.print(s))
       case None => ""
     }
-    val endstring = this.end match {
+    val endstring = this._end match {
       case Some(e) => "/endTime/%s".format(zkbdateformatter.print(e))
       case None => ""
     }
