@@ -6,6 +6,8 @@ import slick.jdbc.JdbcBackend
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
+import scala.language.postfixOps
+
 /**
  * Created by Andi on 05/11/2015.
  */

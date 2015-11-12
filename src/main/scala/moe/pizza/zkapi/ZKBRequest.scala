@@ -9,6 +9,7 @@ import org.joda.time.format.DateTimeFormatterBuilder
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Failure, Try}
+import scala.collection.JavaConverters._
 
 case class ZKBRequest(
                        baseurl: String = "https://zkillboard.com/api/",
@@ -36,6 +37,8 @@ case class ZKBRequest(
     .appendMinuteOfHour(2)
     .toFormatter
 
+  val apireturntype = OM.getTypeFactory.constructCollectionType(classOf[java.util.ArrayList[zkillboard.Killmail]], classOf[zkillboard.Killmail])
+
   def sortAsc() = this.copy(sort = "asc")
   def sortDesc() = this.copy(sort = "desc")
   def page(i: Int) = this.copy(page = i)
@@ -57,7 +60,6 @@ case class ZKBRequest(
   def warID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("warID" -> id))
 
   def build(implicit ec: ExecutionContext): Future[Try[List[Killmail]]] = {
-    val mainurl = baseurl + "/orderDirection/%s".format(this.sort) + "/page/%d".format(page)
     val typestring = typemodifier match {
       case Some(t) => "/%s".format(t)
       case None => ""
@@ -72,14 +74,15 @@ case class ZKBRequest(
       case Some(e) => "/endTime/%s".format(zkbdateformatter.print(e))
       case None => ""
     }
+    val fullurl = baseurl + typestring + modifierstring + "/orderDirection/%s".format(this.sort) + "/page/%d".format(page) + startstring + endstring
+    print(fullurl)
 
-    val fullurl = mainurl + typestring + modifierstring + startstring + endstring
     val mysvc = url(fullurl).addHeader("User-Agent", this.useragent)
     var req = mysvc.GET
     // return as future either
     val response = Http(req OK as.String)
     response.either.map {
-      case Right(r) => Right(OM.readValue(r, classOf[List[zkillboard.Killmail]]))
+      case Right(r) => Right(OM.readValue[java.util.ArrayList[zkillboard.Killmail]](r, apireturntype).asScala.toList)
       case Left(t) => Left(t)
     }.map{_.toTry}
   }
