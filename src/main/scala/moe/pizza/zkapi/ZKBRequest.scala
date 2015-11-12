@@ -75,7 +75,6 @@ case class ZKBRequest(
       case None => ""
     }
     val fullurl = baseurl + typestring + modifierstring + "/orderDirection/%s".format(this.sort) + "/page/%d".format(page) + startstring + endstring
-    print(fullurl)
 
     val mysvc = url(fullurl).addHeader("User-Agent", this.useragent)
     var req = mysvc.GET
