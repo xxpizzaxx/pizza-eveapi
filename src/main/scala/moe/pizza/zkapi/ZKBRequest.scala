@@ -20,8 +20,7 @@ case class ZKBRequest(
                        typemodifier: Option[String] = None,
                        _start: Option[DateTime] = None,
                        _end: Option[DateTime] = None
-
-                       ) {
+                     ) (implicit ex: ExecutionContext) {
   implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
     def toTry:Try[T] = e.fold(Failure(_), Success(_))
   }
@@ -59,7 +58,7 @@ case class ZKBRequest(
   def regionID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("regionID" -> id))
   def warID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("warID" -> id))
 
-  def build(implicit ec: ExecutionContext): Future[Try[List[Killmail]]] = {
+  def build(): Future[Try[List[Killmail]]] = {
     val typestring = typemodifier match {
       case Some(t) => "/%s".format(t)
       case None => ""
