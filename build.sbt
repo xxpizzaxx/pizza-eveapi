@@ -24,7 +24,7 @@ val slickVersion = "3.0.1"
 libraryDependencies ++= Seq(
   "org.scala-lang.modules"       %% "scala-xml"                % "1.0.3",
   "org.scala-lang.modules"       %% "scala-parser-combinators" % "1.0.3",
-  "net.databinder.dispatch"      %% "dispatch-core"            % "0.11.2",
+  "net.databinder.dispatch"      %% "dispatch-core"            % "0.11.3",
   "net.debasishg"                %% "redisclient"              % "3.0",
   "org.json4s"                   %% "json4s-jackson"           % "3.2.10",
   "com.fasterxml.jackson.module" %% "jackson-module-scala"     % "2.6.1",
