@@ -19,7 +19,7 @@ test <<= (test in Test) dependsOn buildSources
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.3"
 libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3"
-libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.2"
+libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.3"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 libraryDependencies += "com.github.tomakehurst" % "wiremock" % "1.33" % "test"
