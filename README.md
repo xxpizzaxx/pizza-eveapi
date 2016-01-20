@@ -32,7 +32,7 @@ And depend upon it like so:
 <dependency>
     <groupId>moe.pizza</groupId>
     <artifactId>eveapi</artifactId>
-    <version>0.20</version>
+    <version>0.23</version>
 </dependency>
 ```
 
@@ -51,7 +51,7 @@ And depend on it:
 
 ```scala
 libraryDependencies ++= Seq(
-  "moe.pizza" %% "eveapi" % "0.20"
+  "moe.pizza" %% "eveapi" % "0.23"
 )
 ```
 
