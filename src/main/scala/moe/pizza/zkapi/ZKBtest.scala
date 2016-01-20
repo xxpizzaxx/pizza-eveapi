@@ -8,8 +8,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import moe.pizza.eveapi._
 
 object ZKBtest extends App {
-  val r = new ZKBRequest(useragent = "test-client").kills().solarSystemID(31002377).build()
+  val zkb = new ZKBAPI(useragent = "test-client")
+  val r = zkb.query.kills().solarSystemID(31002377).build()
   val sr = r.sync()
   println(sr.get.head.attackers)
 
+  val result = zkb.stats.alliance(1727758877).sync()
+  println(result.get.supers.supercarriers.data ++ result.get.supers.titans.data)
+
+  val result2 = zkb.stats.corporation(828800677).sync()
+  println(result2.get.supers.supercarriers.data ++ result2.get.supers.titans.data)
 }
