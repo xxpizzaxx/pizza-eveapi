@@ -18,6 +18,7 @@ compile <<= (compile in Compile) dependsOn buildSources
 test <<= (test in Test) dependsOn buildSources
 
 resolvers += Resolver.bintrayRepo("andimiller", "maven")
+resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
 
 val slickVersion = "3.0.1"
 
@@ -34,7 +35,8 @@ libraryDependencies ++= Seq(
   "org.slf4j"                    % "slf4j-simple"              % "1.7.12",
   "com.typesafe.slick"           %% "slick"                    % slickVersion,
   "com.typesafe.slick"           %% "slick-codegen"            % slickVersion,
-  "mysql"                        % "mysql-connector-java"      % "5.1.37"
+  "mysql"                        % "mysql-connector-java"      % "5.1.37",
+  "com.hunorkovacs"              %% "koauth"                   % "1.1.0"
 )
 
 libraryDependencies ++= Seq (
