@@ -33,9 +33,9 @@ object Evewho {
                    memberCount: String
                    )
   case class Character(
-                         character_id: String,
-                         corporation_id: String,
-                         alliance_id: String,
+                         character_id: Long,
+                         corporation_id: Long,
+                         alliance_id: Long,
                          name: String
                          )
   case class CorpData(
