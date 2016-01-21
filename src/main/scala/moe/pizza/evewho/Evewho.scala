@@ -110,7 +110,7 @@ class Evewho(baseurl: String = "http://evewho.com/api.php", useragent: String = 
 
     // return as future either
     val response = Http(req OK as.String)
-    response.map { r=>
+    response.map { r =>
       val cd = OM.readValue(r, classOf[Evewho.AllianceData])
       cd match {
         case s if s.characters.isEmpty =>

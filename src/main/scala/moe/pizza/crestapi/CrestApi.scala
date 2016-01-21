@@ -1,10 +1,9 @@
 package moe.pizza.crestapi
 
-import java.util.Base64
-
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.ning.http.util.Base64
 import dispatch._
 import moe.pizza.crestapi.CrestApi.{VerifyResponse, CallbackResponse}
 import moe.pizza.crestapi.contacts.Types.{ContactCreateInner, ContactCreate}
@@ -34,7 +33,7 @@ class CrestApi(baseurl: String = "https://login.eveonline.com/", cresturl: Strin
   }
 
   def callback(code: String)(implicit ec: ExecutionContext): Future[CallbackResponse] = {
-    val header = Base64.getEncoder.encodeToString(s"$clientID:$secretKey".getBytes)
+    val header = Base64.encode(s"$clientID:$secretKey".getBytes)
     val req = url(baseurl + "/oauth/token")
       .POST
       .addHeader("Authorization", s"Basic $header")
@@ -47,7 +46,7 @@ class CrestApi(baseurl: String = "https://login.eveonline.com/", cresturl: Strin
 
 
   def refresh(token: String)(implicit ec: ExecutionContext): Future[CallbackResponse] = {
-    val header = Base64.getEncoder.encodeToString(s"$clientID:$secretKey".getBytes)
+    val header = Base64.encode(s"$clientID:$secretKey".getBytes)
     val req = url(baseurl + "/oauth/token")
       .POST
       .addHeader("Authorization", s"Basic $header")
