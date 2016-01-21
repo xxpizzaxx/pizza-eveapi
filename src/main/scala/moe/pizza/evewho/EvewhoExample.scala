@@ -13,13 +13,7 @@ object EvewhoExample extends App {
   val evewho = new Evewho()
 
   val paistis = evewho.allianceList(1983809465).sync()
-  paistis match {
-    case Failure(t) =>
-      println("we failed to locate the paistis: %s".format(t))
-      t.printStackTrace()
-    case Success(s) =>
-      println(s.info)
-      println(s.characters)
-  }
+  println(paistis)
+  println(paistis.characters.size)
 
 }

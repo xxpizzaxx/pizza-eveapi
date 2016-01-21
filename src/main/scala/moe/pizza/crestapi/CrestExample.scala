@@ -50,7 +50,7 @@ object CrestExample extends App {
   val evewho = new Evewho()
   val corpname = "Sniggerdly"
   val corpid = eveapi.eve.CharacterID(Seq(corpname)).sync().get.result.head.characterID.toLong
-  val characters = evewho.corporationList(corpid).sync().get.characters
+  val characters = evewho.corporationList(corpid).sync().characters
   val requests = characters.map { c =>
     crest.contacts.createCharacterAddRequest(-10, c.character_id, c.name, watch=true)
   }
