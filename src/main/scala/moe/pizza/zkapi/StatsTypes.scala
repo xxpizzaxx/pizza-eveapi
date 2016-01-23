@@ -104,11 +104,15 @@ object StatsTypes {
                            shipsDestroyed: Double,
                            shipsLost: Double,
                            `type`: String,
-                           activepvp: Activepvp,
                            info: AlliInfo,
                            supers: Supers,
                            hasSupers: Boolean
-                           )
+                           ) {
+    def getSupers: List[SuperPilot] = hasSupers match {
+      case false => List.empty[SuperPilot]
+      case true  => supers.supercarriers.data ++ supers.titans.data
+    }
+  }
 
 
   @JsonIgnoreProperties(ignoreUnknown = true)
@@ -128,6 +132,11 @@ object StatsTypes {
                                info: CorpInfo,
                                supers: Supers,
                                hasSupers: Boolean
-                               )
+                               ) {
+    def getSupers: List[SuperPilot] = hasSupers match {
+      case false => List.empty[SuperPilot]
+      case true  => supers.supercarriers.data ++ supers.titans.data
+    }
+  }
 
 }
