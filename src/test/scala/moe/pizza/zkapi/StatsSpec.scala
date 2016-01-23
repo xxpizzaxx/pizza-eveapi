@@ -22,4 +22,12 @@ class StatsSpec extends FlatSpec with MustMatchers {
     superpilots.head must equal(new SuperPilot(105,93260759,"Doctor Chalke"))
   }
 
+  "alliance stats 2" should "be parsed" in {
+    val json = Source.fromInputStream(getClass.getResourceAsStream("/alliancestats2.json")).getLines().mkString("\n")
+    val OM = new ObjectMapper()
+    OM.registerModule(DefaultScalaModule)
+    val r = OM.readValue[StatsTypes.AllianceInfo](json, classOf[StatsTypes.AllianceInfo])
+    val superpilots = r.supers.supercarriers.data ++ r.supers.titans.data
+  }
+
 }

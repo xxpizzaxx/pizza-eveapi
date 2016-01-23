@@ -125,7 +125,6 @@ object StatsTypes {
                                shipsDestroyed: Double,
                                shipsLost: Double,
                                `type`: String,
-                               activepvp: Activepvp,
                                info: CorpInfo,
                                supers: Supers,
                                hasSupers: Boolean
