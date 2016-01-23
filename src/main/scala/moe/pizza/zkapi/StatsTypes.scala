@@ -108,10 +108,7 @@ object StatsTypes {
                            supers: Supers,
                            hasSupers: Boolean
                            ) {
-    def getSupers: List[SuperPilot] = hasSupers match {
-      case false => List.empty[SuperPilot]
-      case true  => supers.supercarriers.data ++ supers.titans.data
-    }
+    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data), Option(supers.titans.data)).flatten.flatten
   }
 
 
@@ -133,10 +130,7 @@ object StatsTypes {
                                supers: Supers,
                                hasSupers: Boolean
                                ) {
-    def getSupers: List[SuperPilot] = hasSupers match {
-      case false => List.empty[SuperPilot]
-      case true  => supers.supercarriers.data ++ supers.titans.data
-    }
+    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data), Option(supers.titans.data)).flatten.flatten
   }
 
 }
