@@ -18,4 +18,8 @@ object ZKBtest extends App {
 
   val result2 = zkb.stats.corporation(828800677).sync()
   println(result2.get.supers.supercarriers.data ++ result2.get.supers.titans.data)
+
+  val result3 = zkb.autocomplete(zkb.autocomplete.Filters.corporationID, "jita").sync()
+  println(result3)
+
 }

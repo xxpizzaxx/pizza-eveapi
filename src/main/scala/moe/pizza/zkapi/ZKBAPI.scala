@@ -10,7 +10,7 @@ import scala.util.{Success, Failure, Try}
 /**
  * Created by andi on 12/11/15.
  */
-class ZKBAPI(baseurl: String = "https://zkillboard.com/api/",
+class ZKBAPI(baseurl: String = "https://zkillboard.com/",
              useragent: String = "pizza-zkbapi, unknown application") {
 
   val OM = new ObjectMapper()
@@ -22,9 +22,35 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/api/",
 
   def query(implicit ec: ExecutionContext) = new ZKBRequest(this.baseurl, this.useragent)
 
+  object autocomplete {
+    object Filters extends Enumeration {
+      type Filters = Value
+      val regionID = Value("regionID")
+      val solarSystemID = Value("solarSystemID")
+      val allianceID = Value("allianceID")
+      val corporationID = Value("corporationID")
+      val characterID = Value("characterID")
+      val typeID = Value("typeID")
+    }
+    case class AutocompleteResult(
+      id: Long,
+      name: String,
+      `type`: String,
+      image: String
+    )
+    def apply(f: Filters.Filters = Filters.typeID, s: String)(implicit ec: ExecutionContext): Future[List[AutocompleteResult]] = {
+      val fullurl = s"${baseurl}autocomplete/${f.toString}/$s"
+      val svc = url(fullurl).addHeader("User-Agent", useragent)
+      val req = svc.GET
+
+      Http(req OK as.String).map{OM.readValue(_, classOf[List[AutocompleteResult]])}
+    }
+
+  }
+
   object stats {
     def alliance(id: Long)(implicit ec: ExecutionContext) = {
-      val fullurl = baseurl + "stats/allianceID/%d/".format(id)
+      val fullurl = baseurl + "api/stats/allianceID/%d/".format(id)
 
       val mysvc = url(fullurl).addHeader("User-Agent", useragent)
       val req = mysvc.GET
@@ -39,7 +65,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/api/",
       }
     }
     def corporation(id: Long)(implicit ec: ExecutionContext) = {
-      val fullurl = baseurl + "stats/corporationID/%d/".format(id)
+      val fullurl = baseurl + "api/stats/corporationID/%d/".format(id)
 
       val mysvc = url(fullurl).addHeader("User-Agent", useragent)
       val req = mysvc.GET
