@@ -108,7 +108,8 @@ object StatsTypes {
                            supers: Supers,
                            hasSupers: Boolean
                            ) {
-    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data), Option(supers.titans.data)).flatten.flatten
+    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data)).flatten.flatten
+    def getTitans: List[SuperPilot] = List(Option(supers.titans.data)).flatten.flatten
   }
 
 
@@ -130,7 +131,8 @@ object StatsTypes {
                                supers: Supers,
                                hasSupers: Boolean
                                ) {
-    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data), Option(supers.titans.data)).flatten.flatten
+    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data)).flatten.flatten
+    def getTitans: List[SuperPilot] = List(Option(supers.titans.data)).flatten.flatten
   }
 
 }

@@ -27,7 +27,7 @@ class StatsSpec extends FlatSpec with MustMatchers {
     val OM = new ObjectMapper()
     OM.registerModule(DefaultScalaModule)
     val r = OM.readValue[StatsTypes.AllianceInfo](json, classOf[StatsTypes.AllianceInfo])
-    val superpilots = r.getSupers
+    val superpilots = r.getSupers ++ r.getTitans
     superpilots.isEmpty must equal(true)
   }
 
@@ -36,7 +36,7 @@ class StatsSpec extends FlatSpec with MustMatchers {
     val OM = new ObjectMapper()
     OM.registerModule(DefaultScalaModule)
     val r = OM.readValue[StatsTypes.AllianceInfo](json, classOf[StatsTypes.AllianceInfo])
-    val superpilots = r.getSupers
+    val superpilots = r.getSupers ++ r.getTitans
     println(superpilots)
   }
 
