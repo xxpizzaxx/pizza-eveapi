@@ -4,14 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import dispatch._
 
+import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Failure, Try}
+
+import moe.pizza.eveapi.SyncableFuture
+import scala.concurrent.duration._
 
 /**
  * Created by andi on 12/11/15.
  */
 class ZKBAPI(baseurl: String = "https://zkillboard.com/",
-             useragent: String = "pizza-zkbapi, unknown application") {
+             useragent: String = "pizza-zkbapi, unknown application",
+             redisqurl: String = "https://redisq.zkillboard.com/listen.php" ) {
 
   val OM = new ObjectMapper()
   OM.registerModule(new DefaultScalaModule)
@@ -23,6 +28,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
   def query(implicit ec: ExecutionContext) = new ZKBRequest(this.baseurl, this.useragent)
 
   object autocomplete {
+
     object Filters extends Enumeration {
       type Filters = Value
       val regionID = Value("regionID")
@@ -32,20 +38,46 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
       val characterID = Value("characterID")
       val typeID = Value("typeID")
     }
+
     case class AutocompleteResult(
-      id: Long,
-      name: String,
-      `type`: String,
-      image: String
-    )
+                                   id: Long,
+                                   name: String,
+                                   `type`: String,
+                                   image: String
+                                   )
+
     def apply(f: Filters.Filters = Filters.typeID, s: String)(implicit ec: ExecutionContext): Future[List[AutocompleteResult]] = {
       val fullurl = s"${baseurl}autocomplete/${f.toString}/$s"
       val svc = url(fullurl).addHeader("User-Agent", useragent)
       val req = svc.GET
 
-      Http(req OK as.String).map{OM.readValue(_, classOf[List[AutocompleteResult]])}
+      Http(req OK as.String).map {
+        OM.readValue(_, classOf[List[AutocompleteResult]])
+      }
+    }
+  }
+
+  object redisq {
+    def poll()(implicit ec: ExecutionContext): Future[RedisQTypes.RedisQResponse] = {
+      val svc = url(redisqurl).addHeader("User-Agent", useragent)
+      val req = svc.GET
+
+      val response = Http(req OK as.String)
+      response.map{r =>
+        OM.readValue(r, classOf[RedisQTypes.RedisQResponse])
+      }
     }
 
+    def stream()(implicit ec: ExecutionContext): Iterator[RedisQTypes.Package] = new Iterator[RedisQTypes.Package]{
+      def hasNext = true
+      @tailrec
+      def next(): RedisQTypes.Package = {
+        poll().sync(11.seconds).payload match {
+          case Some(p) => p
+          case None => next()
+        }
+      }
+    }
   }
 
   object stats {
