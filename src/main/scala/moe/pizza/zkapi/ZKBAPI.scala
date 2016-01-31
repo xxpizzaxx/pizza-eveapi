@@ -1,6 +1,6 @@
 package moe.pizza.zkapi
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import dispatch._
 
@@ -16,10 +16,12 @@ import scala.concurrent.duration._
  */
 class ZKBAPI(baseurl: String = "https://zkillboard.com/",
              useragent: String = "pizza-zkbapi, unknown application",
-             redisqurl: String = "https://redisq.zkillboard.com/listen.php" ) {
+             redisqurl: String = "https://redisq.zkillboard.com/listen.php",
+             strict: Boolean = true) {
 
   val OM = new ObjectMapper()
   OM.registerModule(new DefaultScalaModule)
+  OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, strict)
 
   implicit class EitherPimp[L <: Throwable, T](e: Either[L, T]) {
     def toTry: Try[T] = e.fold(Failure(_), Success(_))
