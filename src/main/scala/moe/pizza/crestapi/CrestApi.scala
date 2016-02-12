@@ -19,7 +19,8 @@ object CrestApi {
                              @JsonProperty("ExpiresOn") expiresOn: String,
                              @JsonProperty("Scopes") scopes: String,
                              @JsonProperty("TokenType") tokenType: String,
-                             @JsonProperty("CharacterOwnerHash") characterOwnerHash: String
+                             @JsonProperty("CharacterOwnerHash") characterOwnerHash: String,
+                             @JsonProperty("IntellectualProperty") intellectualProperty: String
                              )
 }
 
