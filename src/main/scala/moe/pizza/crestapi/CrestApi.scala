@@ -67,6 +67,28 @@ class CrestApi(baseurl: String = "https://login.eveonline.com/", cresturl: Strin
     r.map{s => OM.readValue(s, classOf[VerifyResponse])}
   }
 
+  object character {
+    def location(characterID: Long, token: String)(implicit ec: ExecutionContext): Future[moe.pizza.crestapi.character.location.Types.Location] = {
+      val req = url(cresturl + s"characters/$characterID/location/")
+        .GET
+        .addHeader("Authorization", s"Bearer $token")
+      val r = Http(req OK as.String)
+      r.map(s => OM.readValue(s, classOf[moe.pizza.crestapi.character.location.Types.Location]))
+    }
+
+  }
+
+  object solarsystem {
+    def get(id: Long, token: String)(implicit ec: ExecutionContext): Future[moe.pizza.crestapi.solarsystem.Types.SolarSystem] = {
+       val req = url(cresturl + s"solarsystems/$id/")
+        .GET
+        .addHeader("Authorization", s"Bearer $token")
+      val r = Http(req OK as.String)
+      r.map(s => OM.readValue(s, classOf[moe.pizza.crestapi.solarsystem.Types.SolarSystem]))
+
+    }
+  }
+
   object contacts {
     def createCharacterAddRequest(standing: Int, id: Long, name: String, watch: Boolean) =
       ContactCreate(standing, "character", ContactCreateInner(id.toString, s"${cresturl}characters/$id/", name, id), watch)
