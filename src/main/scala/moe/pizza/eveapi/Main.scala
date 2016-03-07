@@ -14,8 +14,8 @@ object Main extends App {
   // do API things
   // Get the IDs of these characters and wait 2 seconds for the result
   val r = Await.result(api.eve.CharacterID(List("Lucia Denniard", "wheniaminspace", "capqu")), 2 seconds)
-  // get a list of IDs in a way that fails gracefully
-  val characterids = r.map(_.result) getOrElse(List()) map(_.characterID)
+  // get a list of IDs
+  val characterids = r.result map(_.characterID)
   // look up the characterinfo asynchronously
   val infoLookups = characterids.map{_.toLong}.map{api.eve.CharacterInfo}
   // attach callbacks

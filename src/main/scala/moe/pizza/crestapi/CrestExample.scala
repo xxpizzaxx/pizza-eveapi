@@ -7,6 +7,7 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import moe.pizza.eveapi.{EVEAPI, SyncableFuture}
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 import scala.io.StdIn
 
@@ -49,7 +50,7 @@ object CrestExample extends App {
   val eveapi = new EVEAPI()
   val evewho = new Evewho()
   val corpname = "Sniggerdly"
-  val corpid = eveapi.eve.CharacterID(Seq(corpname)).sync().get.result.head.characterID.toLong
+  val corpid = eveapi.eve.CharacterID(Seq(corpname)).sync().result.head.characterID.toLong
   val characters = evewho.corporationList(corpid).sync().characters
   val requests = characters.map { c =>
     crest.contacts.createCharacterAddRequest(-10, c.character_id, c.name, watch=true)

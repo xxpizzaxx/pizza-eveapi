@@ -7,11 +7,7 @@ import scala.xml.{Elem, XML}
 
 class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[T]) {
 
-  implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
-    def toTry:Try[T] = e.fold(Failure(_), Success(_))
-  }
-
-  def apply(): Future[Try[T]] = {
+  def apply(): Future[T] = {
     val mysvc = url(base+endpoint).addHeader("User-Agent", "pizza-eveapi")
     var req = mysvc.GET
     // add API key
@@ -21,11 +17,8 @@ class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None
     }
     // add arguments
     req = args.foldLeft(req)((r, kv) => r.addQueryParameter(kv._1, kv._2))
-    // return as future either
+    // return as future
     val response = Http(req OK as.String)
-    response.either.map {
-      case Right(r) => Right(scalaxb.fromXML[T](XML.loadString(r)))
-      case Left(t) => Left(t)
-    }.map{_.toTry}
+    response.map{ s => scalaxb.fromXML[T](XML.loadString(s)) }
   }
 }
