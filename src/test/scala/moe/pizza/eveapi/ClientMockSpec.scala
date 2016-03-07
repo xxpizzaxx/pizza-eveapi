@@ -44,8 +44,8 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
   }
 
 
-  def stubit(endpoint: String) = {
-    stubFor(get(urlEqualTo("/"+endpoint.capitalize+".aspx"))
+  def stubit(endpoint: String, e: Option[String] = None) = {
+    stubFor(get(urlEqualTo("/"+e.getOrElse(endpoint.capitalize)+".aspx"))
       .willReturn(aResponse().withBody(getMockContents("/"+endpoint)).withStatus(200))
     )
   }
@@ -83,7 +83,5 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
     val res = client.server.ServerStatus().sync()
     assert(res.isSuccess)
   }
-
-
 
 }

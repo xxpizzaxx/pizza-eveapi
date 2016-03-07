@@ -20,10 +20,14 @@ object Main extends App {
   val infoLookups = characterids.map{_.toLong}.map{api.eve.CharacterInfo}
   // attach callbacks
   infoLookups.foreach{_.onSuccess{
-    case lookup => lookup.map {_.result} map { char =>
+    case Left(l) =>
+      val char = l.result
       println("character %s is of bloodline %s and has security status %f".format(char.characterName, char.bloodline, char.securityStatus))
+    case Right(r) =>
+      val char = r.result
+      println("character %s is of bloodline %s and has security status %f and is in alliance %s".format(char.characterName, char.bloodline, char.securityStatus, char.alliance))
     }
-  }}
+  }
   // end our main method
   println("done")
 }
