@@ -3,7 +3,7 @@ package moe.pizza.eveapi.endpoints
 import moe.pizza.eveapi.generated.eve
 import moe.pizza.eveapi.{ApiRequest, DualApiRequest, XMLApiResponse, XmlDate}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{Left, Right}
 
 
@@ -11,7 +11,7 @@ class Eve(baseurl: String)(implicit ec: ExecutionContext) {
   def AllianceList() = new ApiRequest[eve.AllianceList.Eveapi](baseurl, "Eve/AllianceList.xml.aspx")(eve.AllianceList.AllianceListEveapiFormat).apply().map{r => new XMLApiResponse(r.currentTime.toDateTime, r.cachedUntil.toDateTime, r.result.rowset.row)}
   def CharacterAffiliation(ids: Seq[String]) = new ApiRequest[eve.CharacterAffiliation.Eveapi](baseurl, "Eve/CharacterAffiliation.xml.aspx", None, Map("ids" -> ids.mkString(",")))(eve.CharacterAffiliation.CharacterAffiliationEveapiFormat).apply().map {r => new XMLApiResponse(r.currentTime.toDateTime, r.cachedUntil.toDateTime, r.result.rowset.row)}
   def CharacterID(ids: Seq[String]) = new ApiRequest[eve.CharacterID.Eveapi](baseurl, "Eve/CharacterID.xml.aspx", None, Map("names" -> ids.mkString(",")))(eve.CharacterID.CharacterIDEveapiFormat).apply().map{r => new XMLApiResponse(r.currentTime.toDateTime, r.cachedUntil.toDateTime, r.result.rowset.row)}
-  def CharacterInfo(id: Long) = new DualApiRequest[eve.CharacterInfo.Eveapi, eve.CharacterInfo2.Eveapi](baseurl, "Eve/CharacterInfo.xml.aspx", None, Map("characterID" -> id.toString))(eve.CharacterInfo2.CharacterInfo2EveapiFormat, eve.CharacterInfo.CharacterInfoEveapiFormat).apply().map { v =>
+  def CharacterInfo(id: Long): Future[Either[XMLApiResponse[eve.CharacterInfo2.Result], XMLApiResponse[eve.CharacterInfo.Result]]] = new DualApiRequest[eve.CharacterInfo.Eveapi, eve.CharacterInfo2.Eveapi](baseurl, "Eve/CharacterInfo.xml.aspx", None, Map("characterID" -> id.toString))(eve.CharacterInfo2.CharacterInfo2EveapiFormat, eve.CharacterInfo.CharacterInfoEveapiFormat).apply().map { v =>
     v match {
       case Left(l) => Left(new XMLApiResponse(l.currentTime.toDateTime, l.cachedUntil.toDateTime, l.result))
       case Right(r) => Right(new XMLApiResponse(r.currentTime.toDateTime, r.cachedUntil.toDateTime, r.result))
