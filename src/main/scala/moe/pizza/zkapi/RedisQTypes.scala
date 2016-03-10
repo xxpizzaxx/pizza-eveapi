@@ -43,6 +43,7 @@ object RedisQTypes {
   case class Items(
                     singleton: Long,
                     itemType: Href,
+                    items: Option[List[Items]],
                     quantityDestroyed_str: Option[String],
                     quantityDropped_str: Option[String],
                     flag: Long,
