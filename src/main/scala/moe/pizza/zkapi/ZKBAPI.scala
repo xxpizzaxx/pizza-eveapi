@@ -27,7 +27,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
     def toTry: Try[T] = e.fold(Failure(_), Success(_))
   }
 
-  def query(implicit ec: ExecutionContext) = new ZKBRequest(this.baseurl, this.useragent)
+  def query(implicit ec: ExecutionContext) = new ZKBRequest(this.baseurl+"api/", this.useragent)
 
   object autocomplete {
 
