@@ -5,14 +5,20 @@ import scala.util.{Try, Failure, Success}
 import scala.xml.{Elem, XML}
 
 
-class ApiRequest[T](base: String, endpoint: String,  auth: Option[ApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[T]) {
+class ApiRequest[T](base: String, endpoint: String,  auth: Option[XmlApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[T]) {
 
   def apply(): Future[T] = {
     val mysvc = url(base+endpoint).addHeader("User-Agent", "pizza-eveapi")
     var req = mysvc.GET
     // add API key
     req = auth match {
-      case Some(a) => req.addQueryParameter("keyID", a.keyId.toString).addQueryParameter("vCode", a.vCode)
+      case Some(xmlapikey) =>
+        xmlapikey match {
+          case a: ApiKey =>
+            req.addQueryParameter("keyID", a.keyId.toString).addQueryParameter("vCode", a.vCode)
+          case c: CrestApiKey =>
+            req.addQueryParameter("accessToken", c.accessToken).addQueryParameter("accessType", c.accessType)
+        }
       case None => req
     }
     // add arguments

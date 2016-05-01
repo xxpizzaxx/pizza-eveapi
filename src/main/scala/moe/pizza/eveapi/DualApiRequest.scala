@@ -7,7 +7,7 @@ import scala.util.{Failure, Success, Try}
 import scala.xml.XML
 
 
-class DualApiRequest[Y, X](base: String, endpoint: String, auth: Option[ApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[X], val otherparser: scalaxb.XMLFormat[Y]) {
+class DualApiRequest[Y, X](base: String, endpoint: String, auth: Option[XmlApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[X], val otherparser: scalaxb.XMLFormat[Y]) {
 
   implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
     def toTry:Try[T] = e.fold(Failure(_), Success(_))
@@ -18,7 +18,13 @@ class DualApiRequest[Y, X](base: String, endpoint: String, auth: Option[ApiKey] 
     var req = mysvc.GET
     // add API key
     req = auth match {
-      case Some(a) => req.addQueryParameter("keyID", a.keyId.toString).addQueryParameter("vCode", a.vCode)
+      case Some(xmlapikey) =>
+        xmlapikey match {
+          case a: ApiKey =>
+            req.addQueryParameter("keyID", a.keyId.toString).addQueryParameter("vCode", a.vCode)
+          case c: CrestApiKey =>
+            req.addQueryParameter("accessToken", c.accessToken).addQueryParameter("accessType", c.accessType)
+        }
       case None => req
     }
     // add arguments
