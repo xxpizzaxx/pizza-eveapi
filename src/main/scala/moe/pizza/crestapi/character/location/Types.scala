@@ -28,7 +28,8 @@ object Types {
                      name: String
                     )
 
+  /*
   implicit class PimpedSolarSystem(s: SolarSystem) {
     def get(c: CrestApi, t: String)(implicit ec: ExecutionContext) = c.solarsystem.get(s.id, t)
-  }
+  }*/
 }
