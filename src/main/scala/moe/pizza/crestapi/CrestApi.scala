@@ -8,8 +8,10 @@ import dispatch._
 import moe.pizza.crestapi.CrestApi.{VerifyResponse, CallbackResponse}
 import moe.pizza.crestapi.contacts.Types.{ContactCreateInner, ContactCreate}
 
+import scala.concurrent.duration._
 import scala.annotation.tailrec
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, ExecutionContext}
+import scala.util.Try
 
 object CrestApi {
   case class CallbackResponse(access_token: String, token_type: String, expires_in: Long, refresh_token: Option[String])
@@ -79,13 +81,16 @@ class CrestApi(baseurl: String = "https://login.eveonline.com/", cresturl: Strin
   }
 
   object solarsystem {
-    def get(id: Long, token: String)(implicit ec: ExecutionContext): Future[moe.pizza.crestapi.solarsystem.Types.SolarSystem] = {
-       val req = url(cresturl + s"solarsystems/$id/")
-        .GET
-        .addHeader("Authorization", s"Bearer $token")
-      val r = Http(req OK as.String)
-      r.map(s => OM.readValue(s, classOf[moe.pizza.crestapi.solarsystem.Types.SolarSystem]))
-
+    def get(id: Long, token: String)(implicit ec: ExecutionContext): Future[Try[moe.pizza.crestapi.solarsystem.Types.SolarSystem]] = {
+      Future {
+        Try {
+          val req = url(cresturl + s"solarsystems/$id/")
+            .GET
+            .addHeader("Authorization", s"Bearer $token")
+          val r = Http(req OK as.String)
+          Await.result(r.map(s => OM.readValue(s, classOf[moe.pizza.crestapi.solarsystem.Types.SolarSystem])), 10 seconds)
+        }
+      }
     }
   }
 
