@@ -17,9 +17,15 @@ object Types {
                         )
 
   case class Location(
-                       solarSystem: Option[SolarSystem]
+                       solarSystem: Option[SolarSystem],
+                       station: Option[Station]
                      )
 
+  case class Station(
+                     id_str: String,
+                     href: String,
+                     id: Long,
+                     )
 
   implicit class PimpedSolarSystem(s: SolarSystem) {
     def get(c: CrestApi, t: String)(implicit ec: ExecutionContext) = c.solarsystem.get(s.id, t)
