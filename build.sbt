@@ -23,7 +23,7 @@ libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.3"
 resolvers += Resolver.bintrayRepo("andimiller", "maven")
 
 val slickVersion = "3.0.1"
-val HTTP4S_VERSION = "0.12.3"
+val HTTP4S_VERSION = "0.15.0a"
 
 val circeVersion = "0.4.1"
 
