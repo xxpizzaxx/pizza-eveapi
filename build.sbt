@@ -35,6 +35,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules"       %% "scala-parser-combinators" % "1.0.3",
   "net.databinder.dispatch"      %% "dispatch-core"            % "0.11.3",
   "org.http4s"                   %% "http4s-blaze-client"      % HTTP4S_VERSION,
+  "org.http4s"                   %% "http4s-scala-xml"         % HTTP4S_VERSION,
   "net.debasishg"                %% "redisclient"              % "3.0",
   "org.json4s"                   %% "json4s-jackson"           % "3.2.10",
   "com.fasterxml.jackson.module" %% "jackson-module-scala"     % "2.6.1",
