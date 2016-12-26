@@ -17,10 +17,13 @@ buildSources := {
 compile <<= (compile in Compile) dependsOn buildSources
 test <<= (test in Test) dependsOn buildSources
 
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.3"
+libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3"
+libraryDependencies += "net.databinder.dispatch" %% "dispatch-core" % "0.11.3"
 resolvers += Resolver.bintrayRepo("andimiller", "maven")
 
 val slickVersion = "3.0.1"
-val HTTP4S_VERSION = "0.12.3"
+val HTTP4S_VERSION = "0.15.0a"
 
 val circeVersion = "0.4.1"
 
