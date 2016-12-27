@@ -1,7 +1,5 @@
 package moe.pizza.zkapi
 
-import com.fasterxml.jackson.annotation.{JsonIgnoreProperties, JsonProperty}
-
 /**
  * Created by Andi on 31/01/2016.
  */
@@ -24,11 +22,11 @@ object RedisQTypes {
                        )
   case class Attackers(
                         alliance: Option[Href],
-                        shipType: Href,
-                        corporation: Href,
-                        character: Href,
+                        shipType: Option[Href],
+                        corporation: Option[Href],
+                        character: Option[Href],
                         damageDone_str: String,
-                        weaponType: Href,
+                        weaponType: Option[Href],
                         faction: Option[Href],
                         finalBlow: Boolean,
                         securityStatus: Double,
@@ -69,7 +67,6 @@ object RedisQTypes {
                   id: Long,
                   id_str: String
                   )
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Killmail(
                        solarSystem: SolarSystem,
                        killID: Long,
@@ -93,8 +90,6 @@ object RedisQTypes {
                       killmail: Killmail,
                       zkb: Zkb
                       )
-  case class RedisQResponse(
-    @JsonProperty("package") payload: Option[Package]
-  )
+  case class RedisQResponse(`package`: Option[Package])
 
 }

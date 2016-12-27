@@ -6,8 +6,6 @@ import org.http4s.client.Client
 
 import scalaz.concurrent.Task
 
-
-
 class Map(baseurl: String)(implicit c: Client) {
   def Sovereignty(): Task[Seq[map.Sovereignty.Row]] = {
     new ApiRequest[map.Sovereignty.Eveapi](baseurl, "Map/Sovereignty.xml.aspx")(map.Sovereignty.SovereigntyEveapiFormat).apply().map(_.result.rowset.row)

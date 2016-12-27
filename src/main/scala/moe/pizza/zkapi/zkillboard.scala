@@ -1,13 +1,10 @@
 package moe.pizza.zkapi
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-
 /**
  * Created by Andi on 04/11/2015.
  */
 object zkillboard {
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Victim(
                      shipTypeID: Long,
                      characterID: Long,
@@ -21,7 +18,6 @@ object zkillboard {
                      damageTaken: Long
                      )
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Attackers(
                         characterID: Long,
                         characterName: String,
@@ -38,7 +34,6 @@ object zkillboard {
                         shipTypeID: Long
                         )
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Items(
                     typeID: Long,
                     flag: Long,
@@ -55,7 +50,6 @@ object zkillboard {
   case class Position(x: Double, y: Double, z: Double)
 
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Killmail(
                              killID: Long,
                              solarSystemID: Long,

@@ -1,7 +1,5 @@
 package moe.pizza.crestapi.character
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-
 /**
   * Created by Andi on 18/02/2016.
   */
@@ -33,7 +31,6 @@ object Types {
                           id: Long
                         )
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class Character(
                         standings: Href,
                         bloodLine: HrefWithId,

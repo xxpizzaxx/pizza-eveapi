@@ -1,14 +1,9 @@
 package moe.pizza.zkapi
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import dispatch._
 import moe.pizza.zkapi.zkillboard.Killmail
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatterBuilder
 
-import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success, Try}
 import scala.collection.JavaConverters._
 import scalaz.concurrent.Task
 import org.http4s._
@@ -28,13 +23,7 @@ case class ZKBRequest(
                        typemodifier: Option[String] = None,
                        _start: Option[DateTime] = None,
                        _end: Option[DateTime] = None
-                     ) (implicit ex: ExecutionContext) {
-  implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
-    def toTry:Try[T] = e.fold(Failure(_), Success(_))
-  }
-
-  val OM = new ObjectMapper()
-  OM.registerModule(new DefaultScalaModule)
+                     ) {
 
   val zkbdateformatter = new DateTimeFormatterBuilder()
     .appendYear(4, 4)
@@ -43,8 +32,6 @@ case class ZKBRequest(
     .appendHourOfDay(2)
     .appendMinuteOfHour(2)
     .toFormatter
-
-  val apireturntype = OM.getTypeFactory.constructCollectionType(classOf[java.util.ArrayList[zkillboard.Killmail]], classOf[zkillboard.Killmail])
 
   def sortAsc() = this.copy(sort = "asc")
   def sortDesc() = this.copy(sort = "desc")

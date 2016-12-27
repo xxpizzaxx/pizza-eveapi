@@ -51,7 +51,7 @@ class CrestApi(baseurl: String = "https://login.eveonline.com", cresturl: String
     val req = new Request(method = Method.POST, uri = fulluri)
       .putHeaders(Header("Authorization", s"Basic $header"), Header("Host", "login.eveonline.com"))
       .withContentType(Some(`Content-Type`(`application/x-www-form-urlencoded`)))
-      .withBody(UrlForm.apply("grant_type" -> grantType, payloadName -> code)).run
+      .withBody(UrlForm.apply("grant_type" -> grantType, payloadName -> code)).unsafePerformSync
     client.fetchAs[CallbackResponse](req)(jsonOf[CallbackResponse])
   }
 

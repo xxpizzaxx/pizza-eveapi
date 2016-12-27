@@ -16,7 +16,7 @@ object Main extends App {
   val api = new EVEAPI(client)
   // do API things
   // Get the IDs of these characters and wait 2 seconds for the result
-  val r = api.eve.CharacterID(List("Lucia Denniard", "wheniaminspace", "capqu")).runFor(2 seconds)
+  val r = api.eve.CharacterID(List("Lucia Denniard", "wheniaminspace", "capqu")).unsafePerformSyncFor(2 seconds)
   // get a list of IDs
   val characterids = r.result map(_.characterID)
   // look up the characterinfo asynchronously
@@ -30,8 +30,8 @@ object Main extends App {
       val char = r.result
       println("character %s is of bloodline %s and has security status %f and is in alliance %s".format(char.characterName, char.bloodline, char.securityStatus, char.alliance))
   }}
-  Task.gatherUnordered(main).run
+  Task.gatherUnordered(main).unsafePerformSync
   // end our main method
   println("done")
-  client.shutdown.run
+  client.shutdown.unsafePerformSync
 }

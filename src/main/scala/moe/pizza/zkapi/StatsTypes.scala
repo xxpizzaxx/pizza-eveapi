@@ -1,7 +1,5 @@
 package moe.pizza.zkapi
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-
 /**
  * Created by Andi on 20/01/2016.
  */
@@ -20,12 +18,12 @@ object StatsTypes {
   case class Month(
                     year: Double,
                     month: Double,
-                    shipsLost: Double,
-                    pointsLost: Double,
-                    iskLost: Double,
-                    shipsDestroyed: Double,
-                    pointsDestroyed: Double,
-                    iskDestroyed: Double
+                    shipsLost: Option[Double],
+                    pointsLost: Option[Double],
+                    iskLost: Option[Double],
+                    shipsDestroyed: Option[Double],
+                    pointsDestroyed: Option[Double],
+                    iskDestroyed: Option[Double]
                     )
 
   case class SuperPilot(
@@ -81,7 +79,7 @@ object StatsTypes {
   )
 
   case class SuperPilots(
-                          data: List[SuperPilot],
+                          data: Option[List[SuperPilot]],
                           title: String
                           )
 
@@ -90,7 +88,6 @@ object StatsTypes {
                      supercarriers: SuperPilots
                      )
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class AllianceInfo(
                            allTimeSum: Double,
                            groups: Map[Long, Group],
@@ -108,12 +105,11 @@ object StatsTypes {
                            supers: Supers,
                            hasSupers: Boolean
                            ) {
-    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data)).flatten.flatten
-    def getTitans: List[SuperPilot] = List(Option(supers.titans.data)).flatten.flatten
+    def getSupers: List[SuperPilot] = List(supers.supercarriers.data).flatten.flatten
+    def getTitans: List[SuperPilot] = List(supers.titans.data).flatten.flatten
   }
 
 
-  @JsonIgnoreProperties(ignoreUnknown = true)
   case class CorporationInfo(
                                allTimeSum: Double,
                                groups: Map[Long, Group],
@@ -131,8 +127,8 @@ object StatsTypes {
                                supers: Supers,
                                hasSupers: Boolean
                                ) {
-    def getSupers: List[SuperPilot] = List(Option(supers.supercarriers.data)).flatten.flatten
-    def getTitans: List[SuperPilot] = List(Option(supers.titans.data)).flatten.flatten
+    def getSupers: List[SuperPilot] = List(supers.supercarriers.data).flatten.flatten
+    def getTitans: List[SuperPilot] = List(supers.titans.data).flatten.flatten
   }
 
   case class CharInfo(

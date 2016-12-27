@@ -4,8 +4,6 @@ import moe.pizza.eveapi.generated.char
 import moe.pizza.eveapi._
 import org.http4s.client.Client
 
-import scala.concurrent.ExecutionContext
-
 class Character(baseurl: String, apikey: Option[XmlApiKey])(implicit c: Client) {
   def AccountBalance(characterID: Int) = new ApiRequest[char.AccountBalance.Eveapi](baseurl, "char/AccountBalance.xml.aspx", apikey, Map("characterID" -> characterID.toString)).apply().map{r => new XMLApiResponse(r.currentTime.toDateTime, r.cachedUntil.toDateTime, r.result.rowset.row)}
   def AssetList(characterID: Int) = new ApiRequest[char.AssetList.Eveapi](baseurl, "char/AssetList.xml.aspx", apikey, Map("characterID" -> characterID.toString)).apply().map{r => new XMLApiResponse(r.currentTime.toDateTime, r.cachedUntil.toDateTime, r.result.rowset.row)}

@@ -15,25 +15,25 @@ object ZKBtest extends App {
 
   val zkb = new ZKBAPI(useragent = "test-client")
   val r = zkb.query.kills().solarSystemID(31002377).build()
-  val sr = r.run
+  val sr = r.unsafePerformSync
   println(sr.last.attackers)
 
-  val result = zkb.stats.alliance(1727758877).run
+  val result = zkb.stats.alliance(1727758877).unsafePerformSync
   println(result.supers.supercarriers.data ++ result.supers.titans.data)
 
-  val result2 = zkb.stats.corporation(828800677).run
+  val result2 = zkb.stats.corporation(828800677).unsafePerformSync
   println(result2.supers.supercarriers.data ++ result2.supers.titans.data)
 
   val result25 = zkb.stats.character(90758388).unsafePerformSync
   println(result25)
 
   /*
-  val result3 = zkb.autocomplete(zkb.autocomplete.Filters.solarSystemID, "jita").run
+  val result3 = zkb.autocomplete(zkb.autocomplete.Filters.solarSystemID, "jita").unsafePerformSync
   println(result3)
   */
 
   // streaming
-  val redisqr = zkb.redisq.poll().run
+  val redisqr = zkb.redisq.poll().unsafePerformSync
   println(redisqr)
 
   val stream = zkb.redisq.stream()

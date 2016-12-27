@@ -1,8 +1,5 @@
 package moe.pizza.zkapi
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import org.http4s._
@@ -22,11 +19,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
              redisqurl: String = "https://redisq.zkillboard.com/listen.php",
              strict: Boolean = true) {
 
-  val OM = new ObjectMapper()
-  OM.registerModule(new DefaultScalaModule)
-  OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, strict)
-
-  def query(implicit ec: ExecutionContext) = new ZKBRequest(Uri.unsafeFromString(this.baseurl+"api/"), this.useragent)
+  def query() = new ZKBRequest(Uri.unsafeFromString(this.baseurl+"api/"), this.useragent)
 
   object autocomplete {
 
@@ -72,7 +65,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
       def hasNext = true
       @tailrec
       def next(): RedisQTypes.Package = {
-        poll().runFor(11.seconds).payload match {
+        poll().unsafePerformSyncFor(11.seconds).`package` match {
           case Some(p) => p
           case None => next()
         }

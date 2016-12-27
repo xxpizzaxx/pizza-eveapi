@@ -36,13 +36,10 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.scala-lang.modules"       %% "scala-xml"                % "1.0.3",
   "org.scala-lang.modules"       %% "scala-parser-combinators" % "1.0.3",
-  "net.databinder.dispatch"      %% "dispatch-core"            % "0.11.3",
   "org.http4s"                   %% "http4s-blaze-client"      % HTTP4S_VERSION,
   "org.http4s"                   %% "http4s-scala-xml"         % HTTP4S_VERSION,
   "org.http4s"                   %% "http4s-circe"             % HTTP4S_VERSION,
   "net.debasishg"                %% "redisclient"              % "3.0",
-  "org.json4s"                   %% "json4s-jackson"           % "3.2.10",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala"     % "2.6.1",
   "org.eclipse.jetty.websocket"  % "websocket-client"          % "9.3.5.v20151012",
   "joda-time"                    % "joda-time"                 % "2.8.2",
   "org.joda"                     % "joda-convert"              % "1.2",

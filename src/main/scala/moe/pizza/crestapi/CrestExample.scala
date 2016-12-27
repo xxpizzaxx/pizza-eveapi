@@ -24,38 +24,38 @@ object CrestExample extends App {
   val callback = StdIn.readLine()
 
   println("requesting the callback results")
-  val r = crest.callback(callback).run
+  val r = crest.callback(callback).unsafePerformSync
   println(r)
 
   println("refreshing access token")
-  val refreshed = crest.refresh(r.refresh_token.get).run
+  val refreshed = crest.refresh(r.refresh_token.get).unsafePerformSync
   println(refreshed)
 
 
   println("verifying")
-  val verify = crest.verify(refreshed.access_token).run
+  val verify = crest.verify(refreshed.access_token).unsafePerformSync
   println(verify)
 
   println("reading location")
-  val location = crest.character.location(verify.CharacterID, refreshed.access_token).run
+  val location = crest.character.location(verify.CharacterID, refreshed.access_token).unsafePerformSync
   println(location)
 
   /*println("reading contacts")
-  val contacts = crest.contacts.getContacts(verify.characterID, refreshed.access_token).run
+  val contacts = crest.contacts.getContacts(verify.characterID, refreshed.access_token).unsafePerformSync
   println(contacts)
 
 
   println("adding wheniaminspace")
   val newcontact = ContactCreate(-10, "character", ContactCreateInner("1109604843", "https://api-sisi.testeveonline.com/characters/1109604843/", "wheniaminspace", 1109604843), true)
-  val createresult = crest.contacts.createContact(verify.characterID, refreshed.access_token, newcontact).run
+  val createresult = crest.contacts.createContact(verify.characterID, refreshed.access_token, newcontact).unsafePerformSync
   println(createresult)
 
   println("adding all of Snigg")
   val eveapi = new EVEAPI()
   val evewho = new Evewho()
   val corpname = "Sniggerdly"
-  val corpid = eveapi.eve.CharacterID(Seq(corpname)).run.result.head.characterID.toLong
-  val characters = evewho.corporationList(corpid).run.characters
+  val corpid = eveapi.eve.CharacterID(Seq(corpname)).unsafePerformSync.result.head.characterID.toLong
+  val characters = evewho.corporationList(corpid).unsafePerformSync.characters
   val requests = characters.map { c =>
     crest.contacts.createCharacterAddRequest(-10, c.character_id, c.name, watch=true)
   }

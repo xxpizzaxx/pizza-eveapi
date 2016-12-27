@@ -51,8 +51,8 @@ object Types {
                     contact: Contact,
                     href: String,
                     contactType: String,
-                    watched: Boolean,
-                    blocked: Boolean
+                    watched: Option[Boolean],
+                    blocked: Option[Boolean]
                     )
 
   case class ContactList(

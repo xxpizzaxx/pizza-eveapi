@@ -12,7 +12,7 @@ object Allies extends App {
   val client = PooledHttp1Client()
   val api = new EVEAPI(client)
   // get all entities that are over 4.9 to the alliance
-  val contacts = api.corp.ContactList().run.result.find {
+  val contacts = api.corp.ContactList().unsafePerformSync.result.find {
       _.name.startsWith("alliance")
     }.map {
       _.row.filter {
@@ -21,7 +21,7 @@ object Allies extends App {
   }.getOrElse(Seq.empty)
 
   // Find all current alliances in EVE
-  val allKnownAllianceIds = api.eve.AllianceList().run.result.map{_.allianceID}
+  val allKnownAllianceIds = api.eve.AllianceList().unsafePerformSync.result.map{_.allianceID}
   // Count how many are in our contacts
   val alliancesCount = contacts.count(c => allKnownAllianceIds.contains(c.contactID))
   // Tell the user
