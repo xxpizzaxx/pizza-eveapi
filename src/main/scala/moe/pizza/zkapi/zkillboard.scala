@@ -9,9 +9,6 @@ object zkillboard {
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   case class Victim(
-                     x: Double,
-                     y: Double,
-                     z: Double,
                      shipTypeID: Long,
                      characterID: Long,
                      characterName: String,
@@ -34,7 +31,7 @@ object zkillboard {
                         allianceName: String,
                         factionID: Long,
                         factionName: String,
-                        securityStatus: Long,
+                        securityStatus: Double,
                         damageDone: Double,
                         finalBlow: Long,
                         weaponTypeID: Long,
@@ -50,6 +47,14 @@ object zkillboard {
                     singleton: Long
                     )
 
+  case class Zkb(
+                hash: String,
+                points: Long
+                )
+
+  case class Position(x: Double, y: Double, z: Double)
+
+
   @JsonIgnoreProperties(ignoreUnknown = true)
   case class Killmail(
                              killID: Long,
@@ -57,7 +62,9 @@ object zkillboard {
                              killTime: String,
                              moonID: Long,
                              victim: Victim,
+                             position: Option[Position],
                              attackers: List[Attackers],
-                             items: List[Items]
+                             items: List[Items],
+                             zkb: Zkb
                              )
 }

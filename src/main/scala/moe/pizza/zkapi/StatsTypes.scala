@@ -135,4 +135,31 @@ object StatsTypes {
     def getTitans: List[SuperPilot] = List(Option(supers.titans.data)).flatten.flatten
   }
 
+  case class CharInfo(
+  allianceID: Long,
+  corporationID: Long,
+  factionID: Long,
+  id: Long,
+  killID: Long,
+  lastApiUpdate: LastApiUpdate,
+  name: String,
+  `type`: String
+  )
+
+  case class CharacterInfo(
+                             `type`: String,
+                             id: Long,
+                             shipsLost: Long,
+                             pointsLost: Double,
+                             iskLost: Double,
+                             shipsDestroyed: Long,
+                             pointsDestroyed: Double,
+                             iskDestroyed: Double,
+                             sequence: Long,
+                             activepvp: List[Activepvp],
+                             info: CharInfo
+                             //groups: Map[Long, Group],
+                             //months: Map[Long, Month]
+                          )
+
 }

@@ -8,11 +8,19 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatterBuilder
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Success, Failure, Try}
+import scala.util.{Failure, Success, Try}
 import scala.collection.JavaConverters._
+import scalaz.concurrent.Task
+import org.http4s._
+import org.http4s.client.Client
+import org.http4s.Uri
+import org.http4s.circe._
+import io.circe._
+import io.circe.generic.auto._
+import org.http4s.Uri.Path
 
 case class ZKBRequest(
-                       baseurl: String = "https://zkillboard.com/api/",
+                       baseurl: Uri = Uri.uri("https://zkillboard.com/api"),
                        useragent: String = "pizza-zkbapi, unknown application",
                        sort: String = "desc",
                        modifiers: Map[String,Long] = Map(),
@@ -58,30 +66,19 @@ case class ZKBRequest(
   def regionID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("regionID" -> id))
   def warID(id: Long) = this.copy(modifiers = this.modifiers ++ Map("warID" -> id))
 
-  def build(): Future[Try[List[Killmail]]] = {
-    val typestring = typemodifier match {
-      case Some(t) => "/%s".format(t)
-      case None => ""
+  implicit class SlashOptionAbleUri(u: Uri) {
+    def /?(p: Option[Path]) = p.foldLeft(u)((p, u) => p / u)
+    def /() = u.copy(path = u.path + "/")
+  }
 
-    }
-    val modifierstring = modifiers.toList.map(kv => "/%s/%d".format(kv._1, kv._2)).mkString
-    val startstring = this._start match {
-      case Some(s) => "/startTime/%s".format(zkbdateformatter.print(s))
-      case None => ""
-    }
-    val endstring = this._end match {
-      case Some(e) => "/endTime/%s".format(zkbdateformatter.print(e))
-      case None => ""
-    }
-    val fullurl = baseurl + typestring + modifierstring + "/orderDirection/%s".format(this.sort) + "/page/%d".format(page) + startstring + endstring
+  def build()(implicit c: Client): Task[List[Killmail]] = {
+    val start = this._start map(zkbdateformatter.print) map ("startTime/"+_ )
+    val end = this._end map(zkbdateformatter.print) map ("endTime"+_)
+    val uri = modifiers.foldLeft(baseurl /? typemodifier){ (u, kv) => u / kv._1 / kv._2.toString } / "orderDirection" / this.sort /  "page" / page.toString /? start /? end /()
 
-    val mysvc = url(fullurl).addHeader("User-Agent", this.useragent)
-    var req = mysvc.GET
-    // return as future either
-    val response = Http(req OK as.String)
-    response.either.map {
-      case Right(r) => Right(OM.readValue[java.util.ArrayList[zkillboard.Killmail]](r, apireturntype).asScala.toList)
-      case Left(t) => Left(t)
-    }.map{_.toTry}
+    val req = Request(uri = uri, method=Method.GET).putHeaders(Header("User-Agent", this.useragent))
+
+    implicit val jdec = jsonOf[List[zkillboard.Killmail]]
+    c.fetchAs[List[zkillboard.Killmail]](req)
   }
 }

@@ -25,7 +25,7 @@ resolvers += Resolver.bintrayRepo("andimiller", "maven")
 val slickVersion = "3.0.1"
 val HTTP4S_VERSION = "0.15.0a"
 
-val circeVersion = "0.4.1"
+val circeVersion = "0.6.1"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
@@ -39,6 +39,7 @@ libraryDependencies ++= Seq(
   "net.databinder.dispatch"      %% "dispatch-core"            % "0.11.3",
   "org.http4s"                   %% "http4s-blaze-client"      % HTTP4S_VERSION,
   "org.http4s"                   %% "http4s-scala-xml"         % HTTP4S_VERSION,
+  "org.http4s"                   %% "http4s-circe"             % HTTP4S_VERSION,
   "net.debasishg"                %% "redisclient"              % "3.0",
   "org.json4s"                   %% "json4s-jackson"           % "3.2.10",
   "com.fasterxml.jackson.module" %% "jackson-module-scala"     % "2.6.1",

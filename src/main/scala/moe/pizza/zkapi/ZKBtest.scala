@@ -1,5 +1,7 @@
 package moe.pizza.zkapi
 
+import org.http4s.client.blaze.PooledHttp1Client
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -8,24 +10,30 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import moe.pizza.eveapi._
 
 object ZKBtest extends App {
+
+  implicit val c = PooledHttp1Client()
+
   val zkb = new ZKBAPI(useragent = "test-client")
-  /*
   val r = zkb.query.kills().solarSystemID(31002377).build()
-  val sr = r.sync()
-  println(sr.get.head.attackers)
+  val sr = r.run
+  println(sr.last.attackers)
+
+  val result = zkb.stats.alliance(1727758877).run
+  println(result.supers.supercarriers.data ++ result.supers.titans.data)
+
+  val result2 = zkb.stats.corporation(828800677).run
+  println(result2.supers.supercarriers.data ++ result2.supers.titans.data)
+
+  val result25 = zkb.stats.character(90758388).unsafePerformSync
+  println(result25)
+
+  /*
+  val result3 = zkb.autocomplete(zkb.autocomplete.Filters.solarSystemID, "jita").run
+  println(result3)
   */
 
-  val result = zkb.stats.alliance(1727758877).sync()
-  println(result.get.supers.supercarriers.data ++ result.get.supers.titans.data)
-
-  val result2 = zkb.stats.corporation(828800677).sync()
-  println(result2.get.supers.supercarriers.data ++ result2.get.supers.titans.data)
-
-  val result3 = zkb.autocomplete(zkb.autocomplete.Filters.corporationID, "jita").sync()
-  println(result3)
-
   // streaming
-  val redisqr = zkb.redisq.poll().sync()
+  val redisqr = zkb.redisq.poll().run
   println(redisqr)
 
   val stream = zkb.redisq.stream()

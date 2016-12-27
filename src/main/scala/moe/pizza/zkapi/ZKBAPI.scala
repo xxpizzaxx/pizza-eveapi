@@ -2,14 +2,17 @@ package moe.pizza.zkapi
 
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import dispatch._
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
-import scala.util.{Success, Failure, Try}
+import org.http4s._
+import org.http4s.client.Client
+import io.circe._
+import io.circe.generic.auto._
+import org.http4s.circe._
 
-import moe.pizza.eveapi.SyncableFuture
 import scala.concurrent.duration._
+import scalaz.concurrent.Task
 
 /**
  * Created by andi on 12/11/15.
@@ -23,11 +26,7 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
   OM.registerModule(new DefaultScalaModule)
   OM.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, strict)
 
-  implicit class EitherPimp[L <: Throwable, T](e: Either[L, T]) {
-    def toTry: Try[T] = e.fold(Failure(_), Success(_))
-  }
-
-  def query(implicit ec: ExecutionContext) = new ZKBRequest(this.baseurl+"api/", this.useragent)
+  def query(implicit ec: ExecutionContext) = new ZKBRequest(Uri.unsafeFromString(this.baseurl+"api/"), this.useragent)
 
   object autocomplete {
 
@@ -48,33 +47,32 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
                                    image: String
                                    )
 
-    def apply(f: Filters.Filters = Filters.typeID, s: String)(implicit ec: ExecutionContext): Future[List[AutocompleteResult]] = {
+    def apply(f: Filters.Filters = Filters.typeID, s: String)(implicit c: Client): Task[List[AutocompleteResult]] = {
       val fullurl = s"${baseurl}autocomplete/${f.toString}/$s"
-      val svc = url(fullurl).addHeader("User-Agent", useragent)
-      val req = svc.GET
+      val req = Request(uri = Uri.fromString(fullurl).toOption.get, method=Method.GET).putHeaders(Header("User-Agent", useragent))
 
-      Http(req OK as.String).map {
-        OM.readValue(_, classOf[List[AutocompleteResult]])
-      }
+      implicit val jdec = jsonOf[List[AutocompleteResult]]
+
+      println(req)
+
+      c.fetchAs[List[AutocompleteResult]](req)
     }
   }
 
   object redisq {
-    def poll()(implicit ec: ExecutionContext): Future[RedisQTypes.RedisQResponse] = {
-      val svc = url(redisqurl).addHeader("User-Agent", useragent)
-      val req = svc.GET
+    def poll()(implicit c: Client): Task[RedisQTypes.RedisQResponse] = {
+      val req = Request(uri = Uri.fromString(redisqurl).toOption.get, method=Method.GET).putHeaders(Header("User-Agent", useragent))
 
-      val response = Http(req OK as.String)
-      response.map{r =>
-        OM.readValue(r, classOf[RedisQTypes.RedisQResponse])
-      }
+      implicit val jdec = jsonOf[RedisQTypes.RedisQResponse]
+
+      c.fetchAs[RedisQTypes.RedisQResponse](req)
     }
 
-    def stream()(implicit ec: ExecutionContext): Iterator[RedisQTypes.Package] = new Iterator[RedisQTypes.Package]{
+    def stream()(implicit c: Client): Iterator[RedisQTypes.Package] = new Iterator[RedisQTypes.Package]{
       def hasNext = true
       @tailrec
       def next(): RedisQTypes.Package = {
-        poll().sync(11.seconds).payload match {
+        poll().runFor(11.seconds).payload match {
           case Some(p) => p
           case None => next()
         }
@@ -83,35 +81,30 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
   }
 
   object stats {
-    def alliance(id: Long)(implicit ec: ExecutionContext) = {
+    def alliance(id: Long)(implicit c: Client) = {
       val fullurl = baseurl + "api/stats/allianceID/%d/".format(id)
 
-      val mysvc = url(fullurl).addHeader("User-Agent", useragent)
-      val req = mysvc.GET
+      val req = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
-      // return as future either
-      val response = Http(req OK as.String)
-      response.either.map {
-        case Right(r) => Right(OM.readValue(r, classOf[StatsTypes.AllianceInfo]))
-        case Left(t) => Left(t)
-      }.map {
-        _.toTry
-      }
+      implicit val jdec = jsonOf[StatsTypes.AllianceInfo]
+
+      c.fetchAs[StatsTypes.AllianceInfo](req)
     }
-    def corporation(id: Long)(implicit ec: ExecutionContext) = {
+    def corporation(id: Long)(implicit c: Client) = {
       val fullurl = baseurl + "api/stats/corporationID/%d/".format(id)
+      val req = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
 
-      val mysvc = url(fullurl).addHeader("User-Agent", useragent)
-      val req = mysvc.GET
+      implicit val jdec = jsonOf[StatsTypes.CorporationInfo]
 
-      // return as future either
-      val response = Http(req OK as.String)
-      response.either.map {
-        case Right(r) => Right(OM.readValue(r, classOf[StatsTypes.CorporationInfo]))
-        case Left(t) => Left(t)
-      }.map {
-        _.toTry
-      }
+      c.fetchAs[StatsTypes.CorporationInfo](req)
+    }
+    def character(id: Long)(implicit c: Client) = {
+      val fullurl = baseurl + "api/stats/characterID/%d/".format(id)
+      val req = Request(uri = Uri.fromString(fullurl).toOption.get).putHeaders(Header("User-Agent", useragent))
+
+      implicit val jdec = jsonOf[StatsTypes.CharacterInfo]
+
+      c.fetchAs[StatsTypes.CharacterInfo](req)
     }
   }
 

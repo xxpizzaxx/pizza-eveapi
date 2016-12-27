@@ -1,14 +1,15 @@
 package moe.pizza.evewho
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import dispatch._
+import org.http4s._
+import org.http4s.circe._
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.syntax._
+import io.circe.parser._
+import org.http4s.client.Client
 
-import scala.annotation.tailrec
-import scala.concurrent.ExecutionContext
-import scala.util.{Success, Failure, Try}
+import scalaz.concurrent.Task
 
-import moe.pizza.eveapi.SyncableFuture
 
 object Evewho {
   case class CharacterInfo(
@@ -57,69 +58,37 @@ object Evewho {
                              )
 
 }
-class Evewho(baseurl: String = "http://evewho.com/api.php", useragent: String = "unknown pizza-eveapi application") {
+class Evewho(baseuri: Uri = Uri.uri("https://evewho.com/api.php"), useragent: String = "unknown pizza-eveapi application") {
 
-  val OM = new ObjectMapper()
-  OM.registerModule(new DefaultScalaModule)
-
-  implicit class EitherPimp[L <: Throwable, T](e: Either[L, T]) {
-    def toTry: Try[T] = e.fold(Failure(_), Success(_))
+  def characterInfo(id: Long)(implicit c: Client) = {
+    val req = new Request(uri=baseuri.withQueryParam("type", "character").withQueryParam("id", id), method=Method.GET)
+      .putHeaders(Header("User-Agent", useragent))
+    implicit val dec = jsonOf[Evewho.CharacterData]
+    c.fetchAs[Evewho.CharacterData](req)
   }
 
-  // endpoints
-  def characterInfo(id: Long)(implicit ec: ExecutionContext) = {
-    val fullurl = baseurl + "?type=character&id=%d".format(id)
-    val mysvc = url(fullurl).addHeader("User-Agent", this.useragent)
-    val req = mysvc.GET
-
-    // return as future either
-    val response = Http(req OK as.String)
-    response.either.map {
-      case Right(r) => Right(OM.readValue(r, classOf[moe.pizza.evewho.Evewho.CharacterData]))
-      case Left(t) => Left(t)
-    }.map {
-      _.toTry
-    }
-  }
-
-  def corporationList(id: Long, page: Int = 0)(implicit ec: ExecutionContext): Future[Evewho.CorpData] = {
-    val fullurl = baseurl + "?type=corplist&id=%d&page=%d".format(id, page)
-
-    val mysvc = url(fullurl).addHeader("User-Agent", this.useragent)
-    val req = mysvc.GET
-
-    // return as future either
-    val response = Http(req OK as.String)
-    response.map{r =>
-      val cd = OM.readValue(r, classOf[Evewho.CorpData])
-      cd match {
-        case s if s.characters.isEmpty =>
-          s
-        case s if s.characters.nonEmpty =>
-          val r = corporationList(id, page+1).sync()
-          r.copy(characters = r.characters ++ s.characters)
+  def corporationList(id: Long, page: Int = 0)(implicit c: Client): Task[Evewho.CorpData] = {
+    val req = new Request(uri=baseuri.withQueryParam("type", "corplist").withQueryParam("id", id).withQueryParam("page", page), method=Method.GET)
+        .putHeaders(Header("User-Agent", useragent))
+    implicit val dec = jsonOf[Evewho.CorpData]
+    c.fetchAs[Evewho.CorpData](req) map { r =>
+      if (r.characters.isEmpty) r else {
+        val nextPage = corporationList(id, page+1).unsafePerformSync
+        r.copy(characters = r.characters ++ nextPage.characters)
       }
     }
   }
 
-  def allianceList(id: Long, page: Int = 0)(implicit ec: ExecutionContext): Future[Evewho.AllianceData] = {
-    val fullurl = baseurl + "?type=allilist&id=%d&page=%d".format(id, page)
-
-    val mysvc = url(fullurl).addHeader("User-Agent", this.useragent)
-    val req = mysvc.GET
-
-    // return as future either
-    val response = Http(req OK as.String)
-    response.map { r =>
-      val cd = OM.readValue(r, classOf[Evewho.AllianceData])
-      cd match {
-        case s if s.characters.isEmpty =>
-          s
-        case s if s.characters.nonEmpty =>
-          val r = allianceList(id, page+1).sync()
-          r.copy(characters = r.characters ++ s.characters)
+  def allianceList(id: Long, page: Int = 0)(implicit c: Client): Task[Evewho.AllianceData] = {
+    val req = new Request(uri=baseuri.withQueryParam("type", "allilist").withQueryParam("id", id).withQueryParam("page", page), method=Method.GET)
+      .putHeaders(Header("User-Agent", useragent))
+    println(req)
+    implicit val dec = jsonOf[Evewho.AllianceData]
+    c.fetchAs[Evewho.AllianceData](req) map { r =>
+      if (r.characters.isEmpty) r else {
+        val nextPage = allianceList(id, page+1).unsafePerformSync
+        r.copy(characters = r.characters ++ nextPage.characters)
       }
-
     }
   }
 
