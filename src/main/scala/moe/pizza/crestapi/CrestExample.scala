@@ -13,11 +13,15 @@ import scala.language.postfixOps
 import scala.io.StdIn
 
 /**
- * Created by Andi on 20/01/2016.
- */
+  * Created by Andi on 20/01/2016.
+  */
 object CrestExample extends App {
 
-  val crest = new CrestApi(baseurl = "https://sisilogin.testeveonline.com/", cresturl="https://api-sisi.testeveonline.com/", "e", "q", "http://api.pizza.moe:9005/callback")
+  val crest = new CrestApi(baseurl = "https://sisilogin.testeveonline.com/",
+                           cresturl = "https://api-sisi.testeveonline.com/",
+                           "e",
+                           "q",
+                           "http://api.pizza.moe:9005/callback")
   implicit val client = PooledHttp1Client()
 
   val redirect = crest.redirect("teststate", List("esi-mail.send_mail.v1", "characterLocationRead"))
@@ -32,7 +36,6 @@ object CrestExample extends App {
   println("refreshing access token")
   val refreshed = crest.refresh(r.refresh_token.get).unsafePerformSync
   println(refreshed)
-
 
   println("verifying")
   val verify = crest.verify(refreshed.access_token).unsafePerformSync
@@ -65,9 +68,8 @@ object CrestExample extends App {
   val doit = requests.map(n => crest.contacts.createContact(verify.characterID, refreshed.access_token, n))
   doit.foreach{d => Await.result(d, 60 seconds)}
   println("done")
-  */
+   */
 
   client.shutdown.unsafePerformSync
-
 
 }

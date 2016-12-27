@@ -10,18 +10,24 @@ object Allies extends App {
   implicit val apikey = Some(ApiKey(4, "J"))
   // create API object
   val client = PooledHttp1Client()
-  val api = new EVEAPI(client)
+  val api    = new EVEAPI(client)
   // get all entities that are over 4.9 to the alliance
-  val contacts = api.corp.ContactList().unsafePerformSync.result.find {
+  val contacts = api.corp
+    .ContactList()
+    .unsafePerformSync
+    .result
+    .find {
       _.name.startsWith("alliance")
-    }.map {
+    }
+    .map {
       _.row.filter {
         _.standing > 4.9
       }
-  }.getOrElse(Seq.empty)
+    }
+    .getOrElse(Seq.empty)
 
   // Find all current alliances in EVE
-  val allKnownAllianceIds = api.eve.AllianceList().unsafePerformSync.result.map{_.allianceID}
+  val allKnownAllianceIds = api.eve.AllianceList().unsafePerformSync.result.map { _.allianceID }
   // Count how many are in our contacts
   val alliancesCount = contacts.count(c => allKnownAllianceIds.contains(c.contactID))
   // Tell the user
@@ -29,5 +35,5 @@ object Allies extends App {
   // Filter those out
   val blueAlliances = contacts.filter(c => allKnownAllianceIds.contains(c.contactID))
   // Tell the user their names
-  println("All blue alliances are: %s".format(blueAlliances.map{_.contactName}))
+  println("All blue alliances are: %s".format(blueAlliances.map { _.contactName }))
 }

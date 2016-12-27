@@ -16,7 +16,9 @@ class KillSpec extends FlatSpec with MustMatchers {
 
   "the circe parser" should "parse things from the API" in {
     val json = Source.fromInputStream(getClass.getResourceAsStream("/normalkills.json")).getLines()
-    val res = json.map{line => decode[Killmail](line)}.toList
+    val res = json.map { line =>
+      decode[Killmail](line)
+    }.toList
     res.count(_.isRight) must equal(200)
   }
 

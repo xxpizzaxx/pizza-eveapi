@@ -11,11 +11,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.io.Source
 
 class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
-  val port = 10123
+  val port     = 10123
   val hostname = "localhost"
   val wiremock = new WireMockServer(wireMockConfig().port(port))
-  val c = PooledHttp1Client()
-
+  val c        = PooledHttp1Client()
 
   override def beforeEach() {
     wiremock.start()
@@ -34,22 +33,21 @@ class ClientMockSpec extends FlatSpec with Matchers with BeforeAndAfterEach {
     val client = new EVEAPI(PooledHttp1Client(), "http://%s:%d/".format(hostname, port))
     stubFor(
       get(urlEqualTo("/Eve/AllianceList.xml.aspx"))
-      .willReturn(
-        aResponse()
-          .withBody(getMockContents("/eve/AllianceList.xml"))
-          .withStatus(200)
-      )
+        .willReturn(
+          aResponse()
+            .withBody(getMockContents("/eve/AllianceList.xml"))
+            .withStatus(200)
+        )
     )
-    val res = client.eve.AllianceList()
+    val res   = client.eve.AllianceList()
     val brave = res.run.result.find(_.allianceID.contains(99003214))
     assert(brave.nonEmpty)
   }
 
-
   def stubit(endpoint: String, e: Option[String] = None) = {
-    stubFor(get(urlEqualTo("/"+e.getOrElse(endpoint.capitalize)+".aspx"))
-      .willReturn(aResponse().withBody(getMockContents("/"+endpoint)).withStatus(200))
-    )
+    stubFor(
+      get(urlEqualTo("/" + e.getOrElse(endpoint.capitalize) + ".aspx"))
+        .willReturn(aResponse().withBody(getMockContents("/" + endpoint)).withStatus(200)))
   }
 
   // Maps

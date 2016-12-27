@@ -10,11 +10,14 @@ import scala.util.{Failure, Success, Try}
 import scala.xml.{Elem, XML}
 import scalaz.concurrent.Task
 
+class DualApiRequest[Y, X](base: String,
+                           endpoint: String,
+                           auth: Option[XmlApiKey] = None,
+                           args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[X],
+                                                              val otherparser: scalaxb.XMLFormat[Y]) {
 
-class DualApiRequest[Y, X](base: String, endpoint: String, auth: Option[XmlApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[X], val otherparser: scalaxb.XMLFormat[Y]) {
-
-  implicit class EitherPimp[L <: Throwable,T](e:Either[L,T]){
-    def toTry:Try[T] = e.fold(Failure(_), Success(_))
+  implicit class EitherPimp[L <: Throwable, T](e: Either[L, T]) {
+    def toTry: Try[T] = e.fold(Failure(_), Success(_))
   }
 
   def apply()(implicit c: Client): Task[Either[X, Y]] = {
@@ -40,9 +43,9 @@ class DualApiRequest[Y, X](base: String, endpoint: String, auth: Option[XmlApiKe
     def parseY(e: Elem) = scalaxb.fromXML[Y](e)
 
     c.fetchAs[Elem](req).map { x =>
-      Try{parseY(x)}.toOption match {
+      Try { parseY(x) }.toOption match {
         case Some(x) => Right(x)
-        case None => Left(parseX(x))
+        case None    => Left(parseX(x))
       }
     }
   }

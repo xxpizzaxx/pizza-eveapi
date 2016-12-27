@@ -23,20 +23,27 @@ import org.http4s.client.blaze._
 import scalaz.concurrent.Task
 
 object CrestApi {
-  case class CallbackResponse(access_token: String, token_type: String, expires_in: Long, refresh_token: Option[String])
+  case class CallbackResponse(access_token: String,
+                              token_type: String,
+                              expires_in: Long,
+                              refresh_token: Option[String])
   case class VerifyResponse(
-                             CharacterID: Long,
-                             CharacterName: String,
-                             ExpiresOn: String,
-                             Scopes: String,
-                             TokenType: String,
-                             CharacterOwnerHash: String,
-                             IntellectualProperty: String
-                             )
+      CharacterID: Long,
+      CharacterName: String,
+      ExpiresOn: String,
+      Scopes: String,
+      TokenType: String,
+      CharacterOwnerHash: String,
+      IntellectualProperty: String
+  )
 }
 
-class CrestApi(baseurl: String = "https://login.eveonline.com", cresturl: String ="https://crest-tq.eveonline.com", clientID: String, secretKey: String, redirectUrl: String) {
-  val baseuri = Uri.fromString(baseurl).toOption.get
+class CrestApi(baseurl: String = "https://login.eveonline.com",
+               cresturl: String = "https://crest-tq.eveonline.com",
+               clientID: String,
+               secretKey: String,
+               redirectUrl: String) {
+  val baseuri  = Uri.fromString(baseurl).toOption.get
   val cresturi = Uri.fromString(cresturl).toOption.get
 
   def redirect(state: String, scopes: Seq[String]) = {
@@ -44,13 +51,15 @@ class CrestApi(baseurl: String = "https://login.eveonline.com", cresturl: String
     baseurl + s"/oauth/authorize/?response_type=code&redirect_uri=$redirectUrl&client_id=$clientID&scope=$scopesreq&state=$state"
   }
 
-  def callback(code: String, grantType: String = "authorization_code", payloadName: String = "code")(implicit c: Client): Task[CallbackResponse] = {
-    val header = Base64.encode(s"$clientID:$secretKey".getBytes)
+  def callback(code: String, grantType: String = "authorization_code", payloadName: String = "code")(
+      implicit c: Client): Task[CallbackResponse] = {
+    val header  = Base64.encode(s"$clientID:$secretKey".getBytes)
     val fulluri = (baseuri / "oauth" / "token")
     val req = new Request(method = Method.POST, uri = fulluri)
       .putHeaders(Header("Authorization", s"Basic $header")) //, Header("Host", baseurl.stripPrefix("https://")))
       .withContentType(Some(`Content-Type`(`application/x-www-form-urlencoded`)))
-      .withBody(UrlForm.apply("grant_type" -> grantType, payloadName -> code)).unsafePerformSync
+      .withBody(UrlForm.apply("grant_type" -> grantType, payloadName -> code))
+      .unsafePerformSync
     c.fetchAs[CallbackResponse](req)(jsonOf[CallbackResponse])
   }
 

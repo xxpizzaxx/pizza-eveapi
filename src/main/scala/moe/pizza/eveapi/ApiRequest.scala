@@ -13,9 +13,8 @@ import org.http4s.client.Client
 import org.http4s.headers.`Content-Type`
 import org.http4s.scalaxml._
 
-
-
-class ApiRequest[T](base: String, endpoint: String,  auth: Option[XmlApiKey] = None, args: Map[String, String] = Map())(implicit val parser: scalaxb.XMLFormat[T]) {
+class ApiRequest[T](base: String, endpoint: String, auth: Option[XmlApiKey] = None, args: Map[String, String] = Map())(
+    implicit val parser: scalaxb.XMLFormat[T]) {
 
   def apply()(implicit c: Client): Task[T] = {
     val uri = auth.foldLeft(Uri.fromString(base + endpoint).toOption.get) { (u, k) =>
