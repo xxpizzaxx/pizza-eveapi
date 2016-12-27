@@ -13,6 +13,7 @@ import io.circe.generic.JsonCodec
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
+import org.http4s.client.Client
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, ExecutionContext}
@@ -37,38 +38,36 @@ object CrestApi {
 class CrestApi(baseurl: String = "https://login.eveonline.com", cresturl: String ="https://crest-tq.eveonline.com", clientID: String, secretKey: String, redirectUrl: String) {
   val baseuri = Uri.fromString(baseurl).toOption.get
   val cresturi = Uri.fromString(cresturl).toOption.get
-  val client = PooledHttp1Client()
 
   def redirect(state: String, scopes: Seq[String]) = {
     val scopesreq = scopes.mkString("%20")
     baseurl + s"/oauth/authorize/?response_type=code&redirect_uri=$redirectUrl&client_id=$clientID&scope=$scopesreq&state=$state"
   }
 
-  def callback(code: String, grantType: String = "authorization_code", payloadName: String = "code"): Task[CallbackResponse] = {
+  def callback(code: String, grantType: String = "authorization_code", payloadName: String = "code")(implicit c: Client): Task[CallbackResponse] = {
     val header = Base64.encode(s"$clientID:$secretKey".getBytes)
     val fulluri = (baseuri / "oauth" / "token")
-    println(fulluri.host)
     val req = new Request(method = Method.POST, uri = fulluri)
-      .putHeaders(Header("Authorization", s"Basic $header"), Header("Host", "login.eveonline.com"))
+      .putHeaders(Header("Authorization", s"Basic $header")) //, Header("Host", baseurl.stripPrefix("https://")))
       .withContentType(Some(`Content-Type`(`application/x-www-form-urlencoded`)))
       .withBody(UrlForm.apply("grant_type" -> grantType, payloadName -> code)).unsafePerformSync
-    client.fetchAs[CallbackResponse](req)(jsonOf[CallbackResponse])
+    c.fetchAs[CallbackResponse](req)(jsonOf[CallbackResponse])
   }
 
-  def refresh(s: String) = callback(s, "refresh_token", "refresh_token")
+  def refresh(s: String)(implicit c: Client) = callback(s, "refresh_token", "refresh_token")(c)
 
-  def verify(token: String): Task[VerifyResponse] = {
+  def verify(token: String)(implicit c: Client): Task[VerifyResponse] = {
     val fulluri = baseuri / "oauth" / "verify"
-    client.fetchAs[VerifyResponse](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
+    c.fetchAs[VerifyResponse](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
       jsonOf[VerifyResponse]
     )
   }
 
   object character {
     import moe.pizza.crestapi.character.location.Types.Location
-    def location(characterID: Long, token: String): Task[Location] = {
+    def location(characterID: Long, token: String)(implicit c: Client): Task[Location] = {
       val fulluri = cresturi / "characters" / characterID.toString / "location" / ""
-      client.fetchAs[Location](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
+      c.fetchAs[Location](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
         jsonOf[Location]
       )
     }

@@ -1,14 +1,15 @@
 package moe.pizza.crestapi
 
-import moe.pizza.crestapi.contacts.Types.{ContactCreateInner, ContactCreate}
+import moe.pizza.crestapi.contacts.Types.{ContactCreate, ContactCreateInner}
 import moe.pizza.evewho.Evewho
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import moe.pizza.eveapi.{EVEAPI, SyncableFuture}
+import org.http4s.client.blaze.PooledHttp1Client
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
-
 import scala.io.StdIn
 
 /**
@@ -16,9 +17,10 @@ import scala.io.StdIn
  */
 object CrestExample extends App {
 
-  val crest = new CrestApi(baseurl = "https://sisilogin.testeveonline.com/", cresturl="https://api-sisi.testeveonline.com/", "c", "G", "http://api.pizza.moe:9005/callback")
+  val crest = new CrestApi(baseurl = "https://sisilogin.testeveonline.com/", cresturl="https://api-sisi.testeveonline.com/", "e", "q", "http://api.pizza.moe:9005/callback")
+  implicit val client = PooledHttp1Client()
 
-  val redirect = crest.redirect("teststate", List("characterLocationRead"))
+  val redirect = crest.redirect("teststate", List("esi-mail.send_mail.v1", "characterLocationRead"))
   println("go to this url, get the redirect code and paste it here")
   println(redirect)
   val callback = StdIn.readLine()
@@ -64,6 +66,8 @@ object CrestExample extends App {
   doit.foreach{d => Await.result(d, 60 seconds)}
   println("done")
   */
+
+  client.shutdown.unsafePerformSync
 
 
 }
