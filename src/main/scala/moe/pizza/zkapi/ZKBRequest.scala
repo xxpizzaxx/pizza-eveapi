@@ -60,12 +60,13 @@ case class ZKBRequest(
 
   def build()(implicit c: Client): Task[List[Killmail]] = {
     val start = this._start map (zkbdateformatter.print) map ("startTime/" + _)
-    val end   = this._end map (zkbdateformatter.print) map ("endTime" + _)
+    val end   = this._end map (zkbdateformatter.print) map ("endTime/" + _)
     val uri = modifiers.foldLeft(baseurl /? typemodifier) { (u, kv) =>
       u / kv._1 / kv._2.toString
-    } / "orderDirection" / this.sort / "page" / page.toString /? start /? end / ()
+    } / "orderDirection" / this.sort / "page" / page.toString
+    val uriWithTimes = uri.copy(path = uri.path + "/"+start+"/"+end+"/")
 
-    val req = Request(uri = uri, method = Method.GET).putHeaders(Header("User-Agent", this.useragent))
+    val req = Request(uri = uriWithTimes, method = Method.GET).putHeaders(Header("User-Agent", this.useragent))
 
     implicit val jdec = jsonOf[List[zkillboard.Killmail]]
     c.fetchAs[List[zkillboard.Killmail]](req)
