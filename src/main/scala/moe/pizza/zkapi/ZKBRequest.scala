@@ -64,7 +64,8 @@ case class ZKBRequest(
     val uri = modifiers.foldLeft(baseurl /? typemodifier) { (u, kv) =>
       u / kv._1 / kv._2.toString
     } / "orderDirection" / this.sort / "page" / page.toString
-    val uriWithTimes = uri.copy(path = uri.path + "/"+start+"/"+end+"/")
+    val uriWithStart = start.foldLeft(uri){(u, s) => u.copy(path = u.path + "/"+s)}
+    val uriWithTimes = end.foldLeft(uri){(u, e) => u.copy(path = u.path + "/"+e)}
 
     val req = Request(uri = uriWithTimes, method = Method.GET).putHeaders(Header("User-Agent", this.useragent))
 
