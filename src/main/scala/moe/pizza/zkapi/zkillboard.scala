@@ -44,7 +44,8 @@ object zkillboard {
 
   case class Zkb(
       hash: String,
-      points: Long
+      points: Long,
+      totalValue: Double
   )
 
   case class Position(x: Double, y: Double, z: Double)
