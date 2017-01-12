@@ -65,9 +65,9 @@ case class ZKBRequest(
       u / kv._1 / kv._2.toString
     } / "orderDirection" / this.sort / "page" / page.toString
     val uriWithStart = start.foldLeft(uri){(u, s) => u.copy(path = u.path + "/"+s)}
-    val uriWithTimes = end.foldLeft(uri){(u, e) => u.copy(path = u.path + "/"+e)}
+    val uriWithTimes = end.foldLeft(uriWithStart){(u, e) => u.copy(path = u.path + "/"+e)}
 
-    val req = Request(uri = uriWithTimes, method = Method.GET).putHeaders(Header("User-Agent", this.useragent))
+    val req = Request(uri = uriWithTimes /(), method = Method.GET).putHeaders(Header("User-Agent", this.useragent))
 
     implicit val jdec = jsonOf[List[zkillboard.Killmail]]
     c.fetchAs[List[zkillboard.Killmail]](req)
