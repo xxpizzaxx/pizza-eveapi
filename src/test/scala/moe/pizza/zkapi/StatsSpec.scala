@@ -35,4 +35,9 @@ class StatsSpec extends FlatSpec with MustMatchers {
     println(superpilots)
   }
 
+  "character stats 1" should "be parsed" in {
+    val json        = Source.fromInputStream(getClass.getResourceAsStream("/characterstats1.json")).getLines().mkString("\n")
+    val r           = decode[StatsTypes.CharacterInfo](json)
+    r.isRight must equal(true)
+  }
 }

@@ -38,12 +38,12 @@ object StatsTypes {
   )
 
   case class Activepvp(
-      characters: Characters,
-      corporations: Characters,
-      ships: Characters,
-      systems: Characters,
-      regions: Characters,
-      kills: Characters
+      characters: Option[Characters],
+      corporations: Option[Characters],
+      ships: Option[Characters],
+      systems: Option[Characters],
+      regions: Option[Characters],
+      kills: Option[Characters]
   )
 
   case class LastApiUpdate(
@@ -151,7 +151,7 @@ object StatsTypes {
       pointsDestroyed: Double,
       iskDestroyed: Double,
       sequence: Long,
-      activepvp: List[Activepvp],
+      activepvp: Activepvp,
       info: CharInfo
       //groups: Map[Long, Group],
       //months: Map[Long, Month]
