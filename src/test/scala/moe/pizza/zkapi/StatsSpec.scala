@@ -40,4 +40,11 @@ class StatsSpec extends FlatSpec with MustMatchers {
     val r           = decode[StatsTypes.CharacterInfo](json)
     r.isRight must equal(true)
   }
+
+  "corporation stats 1" should "be parsed" in {
+    val json = Source.fromInputStream(getClass.getResourceAsStream("/corporationstats1.json")).getLines().mkString("\n")
+    val r = decode[StatsTypes.CorporationInfo](json)
+    r.isRight must equal(true)
+    r.right.get.activepvp.flatMap(_.characters).get.count must equal (107)
+  }
 }
