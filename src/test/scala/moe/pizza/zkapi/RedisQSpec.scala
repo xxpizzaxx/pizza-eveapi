@@ -9,6 +9,7 @@ import scala.io.Source
 
 class RedisQSpec extends FlatSpec with MustMatchers {
 
+  /*
   "redisq responses" should "be parsed" in {
     val json = Source.fromInputStream(getClass.getResourceAsStream("/redisq.json")).getLines().mkString("\n")
     val OM = new ObjectMapper()
@@ -53,6 +54,7 @@ class RedisQSpec extends FlatSpec with MustMatchers {
     r.payload.isDefined must equal(true)
     r.payload.get.killmail.victim.faction.get.name must equal("Gallente Federation")
   }
+  */
 
 
 

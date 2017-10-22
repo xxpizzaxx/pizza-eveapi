@@ -94,7 +94,7 @@ object RedisQTypes {
                       zkb: Zkb
                       )
   case class RedisQResponse(
-    @JsonProperty("package") payload: Option[Package]
+    @JsonProperty("package") payload: Option[JsonNode]
   )
 
 }
