@@ -61,10 +61,10 @@ class ZKBAPI(baseurl: String = "https://zkillboard.com/",
       c.fetchAs[RedisQTypes.RedisQResponse](req)
     }
 
-    def stream()(implicit c: Client): Iterator[RedisQTypes.Package] = new Iterator[RedisQTypes.Package] {
+    def stream()(implicit c: Client): Iterator[JsonObject] = new Iterator[JsonObject] {
       def hasNext = true
       @tailrec
-      def next(): RedisQTypes.Package = {
+      def next(): JsonObject = {
         poll().unsafePerformSyncFor(11.seconds).`package` match {
           case Some(p) => p
           case None    => next()

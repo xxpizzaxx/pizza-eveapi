@@ -1,5 +1,7 @@
 package moe.pizza.zkapi
 
+import io.circe.JsonObject
+
 /**
   * Created by Andi on 31/01/2016.
   */
@@ -90,6 +92,6 @@ object RedisQTypes {
                       killmail: Killmail,
                       zkb: Zkb
                       )
-  case class RedisQResponse(`package`: Option[JsonNode])
+  case class RedisQResponse(`package`: Option[JsonObject])
 
 }
