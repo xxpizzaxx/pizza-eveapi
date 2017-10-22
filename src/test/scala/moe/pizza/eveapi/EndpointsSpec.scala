@@ -1,10 +1,9 @@
 package moe.pizza.eveapi
 
-import org.scalatest.{Matchers, FlatSpec}
-import moe.pizza.eveapi.generated.{char, account, eve}
+import org.scalatest.{FlatSpec, Matchers}
+import moe.pizza.eveapi.generated.{account, char, eve}
 import scala.io.Source
 import scala.xml.XML
-
 
 class EndpointsSpec extends FlatSpec with Matchers {
 
@@ -47,7 +46,6 @@ class EndpointsSpec extends FlatSpec with Matchers {
   new EndpointTester[char.UpcomingCalendarEvents.Eveapi]("/raw/char/UpcomingCalendarEvents.xml").apply()
   new EndpointTester[char.WalletJournal.Eveapi]("/raw/char/WalletJournal.xml").apply()
   new EndpointTester[char.WalletTransactions.Eveapi]("/raw/char/WalletTransactions.xml").apply()
-
 
   // eve
   new EndpointTester[eve.CharacterInfo.Eveapi]("/raw/eve/CharacterInfo.xml").apply()

@@ -10,33 +10,34 @@ import scala.concurrent.ExecutionContext
 object Types {
 
   case class SolarSystem(
-                          id_str: String,
-                          href: String,
-                          id: Long,
-                          name: String
-                        )
+      id_str: String,
+      href: String,
+      id: Long,
+      name: String
+  )
 
   case class Location(
-                       solarSystem: Option[SolarSystem],
-                       station: Option[Station],
-                       structure: Option[Structure]
-                     )
+      solarSystem: Option[SolarSystem],
+      station: Option[Station],
+      structure: Option[Structure]
+  )
 
   case class Structure(
-                        id_str: String,
-                        href: String,
-                        id: Long,
-                        name: String
-                      )
+      id_str: String,
+      href: String,
+      id: Long,
+      name: String
+  )
 
   case class Station(
-                     id_str: String,
-                     href: String,
-                     id: Long,
-                     name: String
-                    )
+      id_str: String,
+      href: String,
+      id: Long,
+      name: String
+  )
 
+  /*
   implicit class PimpedSolarSystem(s: SolarSystem) {
     def get(c: CrestApi, t: String)(implicit ec: ExecutionContext) = c.solarsystem.get(s.id, t)
-  }
+  }*/
 }
