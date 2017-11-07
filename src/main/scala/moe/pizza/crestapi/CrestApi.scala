@@ -67,7 +67,7 @@ class CrestApi(baseurl: String = "https://login.eveonline.com",
 
   def verify(token: String)(implicit c: Client): Task[VerifyResponse] = {
     val fulluri = baseuri / "oauth" / "verify"
-    c.fetchAs[VerifyResponse](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
+    c.expect[VerifyResponse](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
       jsonOf[VerifyResponse]
     )
   }
