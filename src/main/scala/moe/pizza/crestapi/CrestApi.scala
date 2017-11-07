@@ -60,7 +60,7 @@ class CrestApi(baseurl: String = "https://login.eveonline.com",
       .withContentType(Some(`Content-Type`(`application/x-www-form-urlencoded`)))
       .withBody(UrlForm.apply("grant_type" -> grantType, payloadName -> code))
       .unsafePerformSync
-    c.fetchAs[CallbackResponse](req)(jsonOf[CallbackResponse])
+    c.expect[CallbackResponse](req)(jsonOf[CallbackResponse])
   }
 
   def refresh(s: String)(implicit c: Client) = callback(s, "refresh_token", "refresh_token")(c)
@@ -76,7 +76,7 @@ class CrestApi(baseurl: String = "https://login.eveonline.com",
     import moe.pizza.crestapi.character.location.Types.Location
     def location(characterID: Long, token: String)(implicit c: Client): Task[Location] = {
       val fulluri = cresturi / "characters" / characterID.toString / "location" / ""
-      c.fetchAs[Location](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
+      c.expect[Location](new Request(uri = fulluri).putHeaders(Header("Authorization", s"Bearer $token")))(
         jsonOf[Location]
       )
     }
